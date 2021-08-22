@@ -1,0 +1,30 @@
+{
+  "name": "clickhouse-orm",
+  "version": "1.0.0",
+  "description": "Clickhouse orm for Nodejs",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zimv/node-clickhouse-orm.git"
+  },
+  "keywords": [
+    "zimv",
+    "clickhouse",
+    "orm"
+  ],
+  "author": "zimv",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/zimv/node-clickhouse-orm/issues"
+  },
+  "homepage": "https://github.com/zimv/node-clickhouse-orm#readme",
+  "scripts": {
+    "tsc": "tsc",
+    "demo1": "node ./dist/demo/demo1"
+  },
+  "dependencies": {
+    "clickhouse": "^2.4.0"
+  },
+  "devDependencies": {
+    "typescript": "^4.3.5"
+  }
+}
