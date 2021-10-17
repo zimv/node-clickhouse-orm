@@ -1,3 +1,6 @@
+/**
+ * Get a pure data instead of a model instance
+ */
 export const getPureData = (keys, schemaInstance) => {
   const data = {};
   keys.forEach((key) => {
@@ -10,7 +13,7 @@ export const insertSQL = (table, keys) => {
   return `INSERT INTO ${table} (${keys.join(',')})`;
 };
 
-//table:tableName or parentSql
+// table: tableName or parentSql
 export const object2Sql = (table, qObj) => {
   if(!qObj) qObj = {};
   const {

@@ -1,7 +1,8 @@
 import { getPureData, insertSQL } from './transformer';
+import { isObject } from './utils';
 import { DebugLog } from './log';
 
-class dataInstance {
+class DataInstance {
   private schema;
   constructor(schemaThis) {
     this.schema = schemaThis;
@@ -42,15 +43,15 @@ export default class Schema {
   }
 
   createModel() {
-    return new dataInstance(this);
+    return new DataInstance(this);
   }
 
   proxyAttr(obj, data, column) {
-    let value; //= (data[key] = obj[key].default || '')
+    let value;
+    // set default value
     const defaultVal = obj[column].default;
-    if (defaultVal) {
-      if (defaultVal === Date.now) value = Date.now();
-      if (defaultVal === Date) value = new Date();
+    if (typeof defaultVal !== 'undefined') {
+      if (defaultVal === Date.now || defaultVal === Date) value = new Date();
       else value = defaultVal;
     }
     Object.defineProperty(data, column, {
@@ -59,12 +60,31 @@ export default class Schema {
         return value;
       },
       set: function (newVal) {
-        if (newVal === undefined) return;
+        // validate value type
         switch (obj[column].type) {
-          case String:
-            // 如果定义的是字符串类型，却传入了数字或者其他类型
-            if (new String(newVal).toString() !== newVal) {
-              throw new Error(`column:(${column}) should be a string, the value is: ${newVal}`);
+          case 'boolean':
+            if (typeof newVal !== 'boolean') {
+              throw new Error(`column[${column}]-value(${newVal}): Type '${typeof newVal}' is not assignable to type 'boolean'`);
+            }
+            break;
+          case 'string':
+            if (typeof newVal !== 'string') {
+              throw new Error(`column[${column}]-value(${newVal}): Type '${typeof newVal}' is not assignable to type 'string'`);
+            }
+            break;
+          case 'number':
+            if (typeof newVal !== 'number') {
+              throw new Error(`column[${column}]-value(${newVal}): Type '${typeof newVal}' is not assignable to type 'number'`);
+            }
+            break;
+          case 'object':
+              if (isObject(newVal)) {
+                throw new Error(`column[${column}]-value(${newVal}): Type '${typeof newVal}' is not assignable to type 'object'`);
+              }
+              break;
+          case 'array':
+            if (Array.isArray(newVal)) {
+              throw new Error(`column[${column}]-value(${newVal}): Type '${typeof newVal}' is not assignable to type 'array'`);
             }
             break;
         }

@@ -1,17 +1,28 @@
+import { ClickHouse } from 'clickhouse';
 import { getPureData, insertSQL, object2Sql } from './transformer';
 import Schema from './schema';
 import { Log, DebugLog } from './log';
 
-/**
- * todo
- * 定义模型需要校验上报内容，不合格内容应该单独不存储，但不影响其他内容存储
- */
+export interface InitParams {
+  client: ClickHouse;
+  db: string;
+  debug: boolean;
+}
+export interface OrmSchema {
+  default?: any;
+  type?: string;
+}
+export interface RigisterParams {
+  tableName: string;
+  schema: { [key: string]: OrmSchema };
+  createTable: (dbTableName: string) => string;
+}
 
 export default class ClickHouseOrm {
   client;
   db;
   debug;
-  constructor({ client, db, debug }) {
+  constructor({ client, db, debug }: InitParams) {
     this.client = client;
     this.db = db;
     this.debug = debug;
@@ -20,11 +31,15 @@ export default class ClickHouseOrm {
     Log(`create database ${this.db}`);
     return this.client.query(`CREATE DATABASE IF NOT EXISTS ${this.db}`).toPromise();
   }
-  schemaRegister = async ({ tableName, schema, createTable }) => {
+
+  /**
+   * @remark
+   * The createDatabase must be completed 
+   */
+  schemaRegister = async ({ tableName, schema, createTable }: RigisterParams) => {
     const dbTableName = `${this.db}.${tableName}`;
 
-    // 如果是远程数据库很可能数据库还没有建立完成，就执行创建表了，这样会报错
-    // 创建表
+    // create table
     const createSql = createTable(dbTableName);
     if(this.debug) DebugLog(`execute schemaRegister> ${createSql}`);
     await this.client.query(createSql).toPromise();
@@ -39,7 +54,6 @@ export default class ClickHouseOrm {
       debug: this.debug,
     });
 
-    // 初始化模型对象
     function instanceModel() {
       const data = schema.createModel();
       return data;
@@ -58,7 +72,6 @@ export default class ClickHouseOrm {
       const datas = dataArray.map((item) => {
         return getPureData(schema.columns, item);
       });
-      // getPureData会剔除要求的数据
       if (datas && datas.length > 0) {
         const insertHeaders = insertSQL(schema.table, schema.columns);
         if(this.debug) DebugLog(`execute insertMany> ${insertHeaders} ${JSON.stringify(datas)}`);

@@ -1,5 +1,7 @@
-import Orm from './orm';
-export default ({client, db, debug = false}) => {
-    const conn = new Orm({ client, db, debug });
-    return conn;
+import Orm, { InitParams } from './orm';
+export * from './constants';
+
+export default ({client, db, debug = false}: InitParams) => {
+  const conn = new Orm({ client, db, debug });
+  return conn;
 }

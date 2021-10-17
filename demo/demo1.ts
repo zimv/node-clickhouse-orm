@@ -1,16 +1,16 @@
 import { ClickHouse } from 'clickhouse';
-import ClickHouseOrm from '../lib/index';
-
+import ClickHouseOrm, { VALIDATION_COLUMN_VALUE_TYPE } from '../lib/index';
 
 const demo1Schema = {
   tableName: 'demo1',
   schema: {
-    time: { type: Date, default: Date }, // 创建时间
-    status: { type: Number }, // 请求接口
-    browser: { type: String }, // 请求参数
-    browser_v: { type: String }, // 请求方法
+    time: { type: VALIDATION_COLUMN_VALUE_TYPE.Date, default: Date },
+    status: { type: VALIDATION_COLUMN_VALUE_TYPE.UInt8 },
+    browser: { type: VALIDATION_COLUMN_VALUE_TYPE.String },
+    browser_v: {},
   },
   createTable: (dbTableName) => {
+    // dbTableName = dbName + '.' + tableName = (orm_test.demo1)
     return `
       CREATE TABLE IF NOT EXISTS ${dbTableName}
       (
