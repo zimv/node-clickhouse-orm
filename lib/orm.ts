@@ -7,6 +7,7 @@ export interface InitParams {
   client: ClickHouse;
   db: string;
   debug: boolean;
+  logService?: ()=>void;
 }
 export interface OrmSchema {
   default?: any;

@@ -22,7 +22,8 @@
     "demo1": "node ./dist/demo/demo1"
   },
   "dependencies": {
-    "clickhouse": "^2.4.0"
+    "clickhouse": "^2.4.0",
+    "colors": "^1.4.0"
   },
   "devDependencies": {
     "typescript": "^4.3.5"
