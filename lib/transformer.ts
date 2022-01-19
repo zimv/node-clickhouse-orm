@@ -17,11 +17,11 @@ export const insertSQL = (table: string, keys: string[]) => {
 
 export interface SqlObject {
   select: string;
-  where: string;
-  limit: number;
-  skip: number;
-  orderBy: string;
-  groupBy: string;
+  where?: string;
+  limit?: number;
+  skip?: number;
+  orderBy?: string;
+  groupBy?: string;
 }
 // table: tableName or parentSql
 export const object2Sql = (table: string, qObj: SqlObject) => {

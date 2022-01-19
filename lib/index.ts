@@ -1,8 +1,8 @@
 import Orm, { InitParams } from './orm';
 export { setLogService } from './log';// Singleton Pattern
-export * from './constants';
+export { VALIDATION_COLUMN_VALUE_TYPE } from './constants';
 
-export default ({
+export const ClickHouseOrm = ({
   client,
   db,
   debug = false
