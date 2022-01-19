@@ -1,9 +1,12 @@
 import Orm, { InitParams } from './orm';
-import { setLogService } from './log';// Singleton Pattern
+export { setLogService } from './log';// Singleton Pattern
 export * from './constants';
 
-export default ({client, db, logService, debug = false}: InitParams) => {
-  if(logService && typeof logService === 'function') setLogService(logService);
+export default ({
+  client,
+  db,
+  debug = false
+}: InitParams) => {
   const conn = new Orm({ client, db, debug });
   return conn;
 }

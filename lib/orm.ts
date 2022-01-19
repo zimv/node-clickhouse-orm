@@ -1,5 +1,5 @@
 import { ClickHouse } from 'clickhouse';
-import { getPureData, insertSQL, object2Sql } from './transformer';
+import { getPureData, insertSQL, object2Sql, SqlObject } from './transformer';
 import Schema from './schema';
 import { Log, DebugLog } from './log';
 
@@ -7,7 +7,6 @@ export interface InitParams {
   client: ClickHouse;
   db: string;
   debug: boolean;
-  logService?: ()=>void;
 }
 export interface OrmSchema {
   default?: any;
@@ -59,7 +58,7 @@ export default class ClickHouseOrm {
       const data = schema.createModel();
       return data;
     }
-    instanceModel.find = function (qObjArray) {
+    instanceModel.find = function (qObjArray: SqlObject[] | SqlObject) {
       if(!Array.isArray(qObjArray)) qObjArray = [qObjArray];
       let sql = '';
       qObjArray.map((qObj, index)=>{

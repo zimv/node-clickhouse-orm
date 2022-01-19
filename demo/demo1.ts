@@ -1,5 +1,5 @@
 import { ClickHouse } from 'clickhouse';
-import ClickHouseOrm, { VALIDATION_COLUMN_VALUE_TYPE } from '../lib/index';
+import ClickHouseOrm, { VALIDATION_COLUMN_VALUE_TYPE, setLogService } from '../lib/index';
 
 const demo1Schema = {
   tableName: 'demo1',
@@ -10,7 +10,7 @@ const demo1Schema = {
     browser_v: {},
   },
   createTable: (dbTableName) => {
-    // dbTableName = dbName + '.' + tableName = (orm_test.demo1)
+    // dbTableName = db + '.' + tableName = (orm_test.demo1)
     return `
       CREATE TABLE IF NOT EXISTS ${dbTableName}
       (

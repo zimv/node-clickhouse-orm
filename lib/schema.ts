@@ -1,10 +1,13 @@
+import { ClickHouse } from 'clickhouse';
 import { getPureData, insertSQL } from './transformer';
+import { VALIDATION_COLUMN_VALUE_TYPE } from './constants';
 import { isObject } from './utils';
 import { DebugLog } from './log';
 
-class DataInstance {
+
+export class DataInstance {
   private schema;
-  constructor(schemaThis) {
+  constructor(schemaThis: Schema) {
     this.schema = schemaThis;
     this.proxyApply();
   }
@@ -22,8 +25,18 @@ class DataInstance {
       .toPromise();
   }
 }
+export interface SchemaObj {
+  type?: VALIDATION_COLUMN_VALUE_TYPE;
+  default?: any;
+}
+export interface SchemaOptions {
+  client: ClickHouse;
+  table: string;
+  debug: boolean;
+}
 
 export default class Schema {
+  // SchemaObj
   public obj;
   public columns;
 
@@ -31,12 +44,12 @@ export default class Schema {
   public table;
   public debug;
 
-  constructor(obj) {
-    this.obj = obj;
-    this.columns = Object.keys(obj);
+  constructor(schemaObj: SchemaObj) {
+    this.obj = schemaObj;
+    this.columns = Object.keys(schemaObj);
     return this;
   }
-  setOptions({ client, table, debug }) {
+  setOptions({ client, table, debug }: SchemaOptions) {
     this.client = client;
     this.table = table;
     this.debug = debug;
@@ -46,7 +59,7 @@ export default class Schema {
     return new DataInstance(this);
   }
 
-  proxyAttr(obj, data, column) {
+  proxyAttr(obj: SchemaObj, data: DataInstance, column: string) {
     let value;
     // set default value
     const defaultVal = obj[column].default;
