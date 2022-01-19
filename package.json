@@ -19,11 +19,13 @@
   "homepage": "https://github.com/zimv/node-clickhouse-orm#readme",
   "scripts": {
     "tsc": "tsc",
-    "demo1": "node ./dist/demo/demo1"
+    "ts-basic": "ts-node ./examples/basic",
+    "node-basic": "node ./examples/basic"
   },
   "dependencies": {
     "clickhouse": "^2.4.0",
-    "colors": "^1.4.0"
+    "colors": "^1.4.0",
+    "ts-node": "^10.4.0"
   },
   "devDependencies": {
     "typescript": "^4.3.5"

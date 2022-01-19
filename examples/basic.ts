@@ -1,11 +1,11 @@
 import { ClickHouse } from 'clickhouse';
-import ClickHouseOrm, { VALIDATION_COLUMN_VALUE_TYPE, setLogService } from '../lib/index';
+import { ClickHouseOrm, VALIDATION_COLUMN_VALUE_TYPE, setLogService } from '../lib/index';
 
 const demo1Schema = {
   tableName: 'demo1',
   schema: {
-    time: { type: VALIDATION_COLUMN_VALUE_TYPE.Date, default: Date },
-    status: { type: VALIDATION_COLUMN_VALUE_TYPE.UInt8 },
+    time: { type: VALIDATION_COLUMN_VALUE_TYPE.DateTime, default: Date },
+    status: { type: VALIDATION_COLUMN_VALUE_TYPE.Int32 },
     browser: { type: VALIDATION_COLUMN_VALUE_TYPE.String },
     browser_v: {},
   },
@@ -39,6 +39,7 @@ const client = new ClickHouse({
 });
 
 const chOrm = ClickHouseOrm({client, db, debug:true});
+
 const doDemo = async ()=>{
   await chOrm.createDatabase();
   const Demo1Model = await chOrm.schemaRegister(demo1Schema);
@@ -47,6 +48,12 @@ const doDemo = async ()=>{
   data.status = 1;
   data.browser = 'chrome';
   data.browser_v = '90.0.1.21';
-  data.save();
+  data.save().then((res)=>{
+    console.log(res);
+    Demo1Model.find({
+      select: '*'
+    });
+  });
 }
+
 doDemo();
