@@ -73,6 +73,27 @@ const doDemo = async ()=>{
   }).then(res=>{
     console.log('countExample1:', res);
   });
+
+  // group example 1
+  await groupExample1({
+    Model: Table1Model,
+  }).then(res=>{
+    console.log('groupExample1:', res);
+  });
+
+  // find array: SELECT xx from (SELECT * from table)
+  await findArrayExample({
+    Model: Table1Model,
+  }).then(res=>{
+    console.log('findArrayExample:', res);
+  });
+
+  // insertMany example
+  await insertManyExample({
+    Model: Table1Model,
+  }).then(res=>{
+    console.log('insertManyExample:', res);
+  });
   
 }
 
@@ -91,7 +112,8 @@ const queryExample1 = ({
   return Model.find({
     where,
     select: `*`,
-    orderBy: 'time ASC'
+    orderBy: 'time ASC',
+    limit: 5,
   })
 }
 
@@ -101,6 +123,51 @@ const countExample1 = ({
   return Model.find({
     select: `count(*) AS total`,
   })
+}
+
+const groupExample1 = ({
+  Model,
+}) => {
+  return Model.find({
+    select: `status,browser`,
+    groupBy: 'status,browser',
+  })
+}
+
+const findArrayExample = ({
+  Model,
+}) => {
+  return Model.find([
+    {
+      select: `browser`,
+      groupBy: 'browser',
+    },
+    {
+      select: `count() as browserTotal`,
+    },
+  ])
+}
+
+const insertManyExample = ({
+  Model,
+}) => {
+  const list = [
+    { status: 2, browser: 'IE', browser_v: '10.0.1.21' },
+    { status: 2, browser: 'FF', browser_v: '2.0.3' },
+    { status: 3, browser: 'IE', browser_v: '1.1.1' },
+  ];
+
+  return Model.insertMany(
+    list.map(item=>{
+      const data = Model();
+      // set value
+      data.time = new Date();
+      data.status = item.status;
+      data.browser = item.browser;
+      data.browser_v = item.browser_v;
+      return data;
+    })
+  )
 }
 
 doDemo();
