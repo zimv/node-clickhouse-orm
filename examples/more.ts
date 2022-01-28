@@ -1,3 +1,4 @@
+import * as dayjs from 'dayjs';
 import { ClickHouse } from 'clickhouse';
 import { ClickHouseOrm, VALIDATION_COLUMN_VALUE_TYPE, setLogService } from '../lib/index';
 
@@ -56,23 +57,50 @@ const doDemo = async ()=>{
   // register schema and create [if] table
   const Table1Model = await chOrm.schemaRegister(table1Schema);
 
-  // new data model
-  const data = Table1Model();
-
-  // set value
-  data.time = new Date();
-  data.status = 1;
-  data.browser = 'chrome';
-  data.browser_v = '90.0.1.21';
-
-  // do save 
-  data.save().then((res)=>{
-    console.log(res);
-    // do select
-    Table1Model.find({
-      select: '*'
-    });
+  // query example 1
+  await queryExample1({
+    Model: Table1Model,
+    status: 1,
+    beginTime: dayjs().subtract(1, 'day').format('YYYY-MM-DD HH:mm:ss'),
+    endTime: dayjs().format('YYYY-MM-DD HH:mm:ss'),
+  }).then(res=>{
+    console.log('queryExample1:', res);
   });
+
+  // count example 1
+  await countExample1({
+    Model: Table1Model,
+  }).then(res=>{
+    console.log('countExample1:', res);
+  });
+  
+}
+
+const queryExample1 = ({
+  Model,
+  status,
+  beginTime,
+  endTime
+}) => {
+  let wheres=[],where;
+  if(status) wheres.push(`status='${status}'`);
+  if(beginTime) wheres.push(`time>='${beginTime}'`);
+  if(endTime) wheres.push(`time<='${endTime}'`);
+  if(wheres.length>0) where = wheres.join(' and ');
+
+  return Model.find({
+    where,
+    select: `*`,
+    orderBy: 'time ASC'
+  })
+}
+
+const countExample1 = ({
+  Model,
+}) => {
+  return Model.find({
+    select: `count(*) AS total`,
+  })
 }
 
 doDemo();

@@ -20,7 +20,8 @@
   "scripts": {
     "tsc": "tsc",
     "ts-basic": "ts-node ./examples/basic",
-    "node-basic": "node ./examples/basic"
+    "node-basic": "node ./examples/basic",
+    "ts-more": "ts-node ./examples/more"
   },
   "dependencies": {
     "clickhouse": "^2.4.0",
@@ -28,6 +29,7 @@
     "ts-node": "^10.4.0"
   },
   "devDependencies": {
+    "dayjs": "^1.10.7",
     "typescript": "^4.3.5"
   }
 }

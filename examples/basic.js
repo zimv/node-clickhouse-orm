@@ -1,8 +1,11 @@
 const { ClickHouse } = require('clickhouse');
 const { ClickHouseOrm, VALIDATION_COLUMN_VALUE_TYPE, setLogService} = require('../dist/lib');
 
-const demo1Schema = {
-  tableName: 'demo1',
+/**
+ * defined Schema 
+ */
+const table1Schema = {
+  tableName: 'table1',
   schema: {
     time: { type: VALIDATION_COLUMN_VALUE_TYPE.DateTime, default: Date },
     status: { type: VALIDATION_COLUMN_VALUE_TYPE.Int32 },
@@ -10,7 +13,7 @@ const demo1Schema = {
     browser_v: {},
   },
   createTable: (dbTableName) => {
-    // dbTableName = db + '.' + tableName = (orm_test.demo1)
+    // dbTableName = db + '.' + tableName = (orm_test.table1)
     return `
       CREATE TABLE IF NOT EXISTS ${dbTableName}
       (
@@ -25,7 +28,9 @@ const demo1Schema = {
   },
 }
 
-const db = 'orm_test';
+/**
+ * new ClickHouse
+ */
 const client = new ClickHouse({
   url: 'localhost',
   port: '8123',
@@ -38,19 +43,34 @@ const client = new ClickHouse({
   format: 'json', // "json" || "csv" || "tsv"
 });
 
+/**
+ * new Orm
+ */
+const db = 'orm_test';
 const chOrm = ClickHouseOrm({client, db, debug:true});
 
 const doDemo = async ()=>{
+  // create database 'orm_test'
   await chOrm.createDatabase();
-  const Demo1Model = await chOrm.schemaRegister(demo1Schema);
-  const data = Demo1Model();
+  
+  // register schema and create [if] table
+  const Table1Model = await chOrm.schemaRegister(table1Schema);
+
+  // new data model
+  const data = Table1Model();
+
+  // set value
   data.time = new Date();
   data.status = 1;
   data.browser = 'chrome';
   data.browser_v = '90.0.1.21';
+
+  // do save 
   data.save().then((res)=>{
     console.log(res);
-    Demo1Model.find({
+
+    // do select
+    Table1Model.find({
       select: '*'
     });
   });
