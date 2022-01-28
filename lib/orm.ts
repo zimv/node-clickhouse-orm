@@ -58,23 +58,23 @@ export default class ClickHouseOrm {
       const data = schema.createModel();
       return data;
     }
-    instanceModel.find = function (qObjArray: SqlObject[] | SqlObject) {
+    instanceModel.find = (qObjArray: SqlObject[] | SqlObject) => {
       if(!Array.isArray(qObjArray)) qObjArray = [qObjArray];
       let sql = '';
       qObjArray.map((qObj, index)=>{
         if(index === 0) sql = object2Sql(table, qObj);
         else sql = object2Sql(`(${sql})`, qObj);
       })
-      if(this.debug) DebugLog(`execute find> ${sql}`);
+      if(this.debug) DebugLog(`[>>EXECUTE FIND<<] ${sql}`);
       return client.query(sql).toPromise();
     };
-    instanceModel.insertMany = function (dataArray) {
+    instanceModel.insertMany = (dataArray) => {
       const datas = dataArray.map((item) => {
         return getPureData(schema.columns, item);
       });
       if (datas && datas.length > 0) {
         const insertHeaders = insertSQL(schema.table, schema.columns);
-        if(this.debug) DebugLog(`execute insertMany> ${insertHeaders} ${JSON.stringify(datas)}`);
+        if(this.debug) DebugLog(`[>>EXECUTE INSERTMANY<<] ${insertHeaders} ${JSON.stringify(datas)}`);
         return client
           .insert(insertHeaders, datas)
           .toPromise();

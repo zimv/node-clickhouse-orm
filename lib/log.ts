@@ -7,8 +7,8 @@ export const setLogService = (logService: ()=>void) => {
 };
 
 export const Log = (desc: string) => {
-    LogService(colors.green(`>> ${CLICKHOUSE_ORM_LOG} ${desc}`))
+    LogService(`${colors.green(`>> ${CLICKHOUSE_ORM_LOG}`)} ${colors.yellow(desc)} \n`)
 };
 export const DebugLog = (desc: string) => {
-    LogService(colors.gray(`>> ${CLICKHOUSE_ORM_DEBUG} ${desc}`))
+    LogService(`${colors.green(`>> ${CLICKHOUSE_ORM_DEBUG}`)} ${colors.gray(desc)} \n`)
 };
