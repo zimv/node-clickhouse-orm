@@ -1,9 +1,13 @@
+import { ClickHouse } from 'clickhouse';
 import { getPureData, insertSQL } from './transformer';
+import { VALIDATION_COLUMN_VALUE_TYPE } from './constants';
+import { isObject } from './utils';
 import { DebugLog } from './log';
 
-class dataInstance {
+
+export class DataInstance {
   private schema;
-  constructor(schemaThis) {
+  constructor(schemaThis: Schema) {
     this.schema = schemaThis;
     this.proxyApply();
   }
@@ -21,8 +25,18 @@ class dataInstance {
       .toPromise();
   }
 }
+export interface SchemaObj {
+  type?: VALIDATION_COLUMN_VALUE_TYPE;
+  default?: any;
+}
+export interface SchemaOptions {
+  client: ClickHouse;
+  table: string;
+  debug: boolean;
+}
 
 export default class Schema {
+  // SchemaObj
   public obj;
   public columns;
 
@@ -30,27 +44,27 @@ export default class Schema {
   public table;
   public debug;
 
-  constructor(obj) {
-    this.obj = obj;
-    this.columns = Object.keys(obj);
+  constructor(schemaObj: SchemaObj) {
+    this.obj = schemaObj;
+    this.columns = Object.keys(schemaObj);
     return this;
   }
-  setOptions({ client, table, debug }) {
+  setOptions({ client, table, debug }: SchemaOptions) {
     this.client = client;
     this.table = table;
     this.debug = debug;
   }
 
   createModel() {
-    return new dataInstance(this);
+    return new DataInstance(this);
   }
 
-  proxyAttr(obj, data, column) {
-    let value; //= (data[key] = obj[key].default || '')
+  proxyAttr(obj: SchemaObj, data: DataInstance, column: string) {
+    let value;
+    // set default value
     const defaultVal = obj[column].default;
-    if (defaultVal) {
-      if (defaultVal === Date.now) value = Date.now();
-      if (defaultVal === Date) value = new Date();
+    if (typeof defaultVal !== 'undefined') {
+      if (defaultVal === Date.now || defaultVal === Date) value = new Date();
       else value = defaultVal;
     }
     Object.defineProperty(data, column, {
@@ -59,12 +73,31 @@ export default class Schema {
         return value;
       },
       set: function (newVal) {
-        if (newVal === undefined) return;
+        // validate value type
         switch (obj[column].type) {
-          case String:
-            // 如果定义的是字符串类型，却传入了数字或者其他类型
-            if (new String(newVal).toString() !== newVal) {
-              throw new Error(`column:(${column}) should be a string, the value is: ${newVal}`);
+          case 'boolean':
+            if (typeof newVal !== 'boolean') {
+              throw new Error(`column[${column}]-value(${newVal}): Type '${typeof newVal}' is not assignable to type 'boolean'`);
+            }
+            break;
+          case 'string':
+            if (typeof newVal !== 'string') {
+              throw new Error(`column[${column}]-value(${newVal}): Type '${typeof newVal}' is not assignable to type 'string'`);
+            }
+            break;
+          case 'number':
+            if (typeof newVal !== 'number') {
+              throw new Error(`column[${column}]-value(${newVal}): Type '${typeof newVal}' is not assignable to type 'number'`);
+            }
+            break;
+          case 'object':
+              if (isObject(newVal)) {
+                throw new Error(`column[${column}]-value(${newVal}): Type '${typeof newVal}' is not assignable to type 'object'`);
+              }
+              break;
+          case 'array':
+            if (Array.isArray(newVal)) {
+              throw new Error(`column[${column}]-value(${newVal}): Type '${typeof newVal}' is not assignable to type 'array'`);
             }
             break;
         }

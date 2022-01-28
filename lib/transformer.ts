@@ -1,4 +1,8 @@
-export const getPureData = (keys, schemaInstance) => {
+import { DataInstance} from './schema';
+/**
+ * Get a pure data instead of a model instance
+ */
+export const getPureData = (keys: string[], schemaInstance: DataInstance) => {
   const data = {};
   keys.forEach((key) => {
     data[key] = schemaInstance[key] != undefined ? schemaInstance[key] : null;
@@ -6,15 +10,23 @@ export const getPureData = (keys, schemaInstance) => {
   return data;
 };
 
-export const insertSQL = (table, keys) => {
+export const insertSQL = (table: string, keys: string[]) => {
   return `INSERT INTO ${table} (${keys.join(',')})`;
 };
 
-//table:tableName or parentSql
-export const object2Sql = (table, qObj) => {
-  if(!qObj) qObj = {};
+
+export interface SqlObject {
+  select: string;
+  where?: string;
+  limit?: number;
+  skip?: number;
+  orderBy?: string;
+  groupBy?: string;
+}
+// table: tableName or parentSql
+export const object2Sql = (table: string, qObj: SqlObject) => {
   const {
-    cols = '*',
+    select = '*',
     where,
     limit,
     skip = 0,
@@ -31,5 +43,5 @@ export const object2Sql = (table, qObj) => {
   if(groupBy){
     _groupBy = `GROUP BY ${groupBy}`
   }
-  return `SELECT ${cols} from ${table} ${where ? 'where ' + where : ''} ${_groupBy} ${_orderBy} ${_limit}`;
+  return `SELECT ${select} from ${table} ${where ? 'where ' + where : ''} ${_groupBy} ${_orderBy} ${_limit}`;
 };
