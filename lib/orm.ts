@@ -3,7 +3,7 @@ import { getPureData, insertSQL, object2Sql, SqlObject } from './transformer';
 import Schema from './schema';
 import { Log, DebugLog } from './log';
 
-export interface InitParams {
+export interface OrmInitParams {
   client: ClickHouse;
   db: string;
   debug: boolean;
@@ -18,11 +18,11 @@ export interface RigisterParams {
   createTable: (dbTableName: string) => string;
 }
 
-export default class ClickHouseOrm {
+export default class ClickhouseOrm {
   client;
   db;
   debug;
-  constructor({ client, db, debug }: InitParams) {
+  constructor({ client, db, debug }: OrmInitParams) {
     this.client = client;
     this.db = db;
     this.debug = debug;

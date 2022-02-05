@@ -19,9 +19,9 @@
   "homepage": "https://github.com/zimv/node-clickhouse-orm#readme",
   "scripts": {
     "tsc": "tsc",
-    "ts-basic": "ts-node ./examples/basic",
+    "ts-basic": "ts-node ./examples/basic.ts",
     "node-basic": "node ./examples/basic",
-    "ts-more": "ts-node ./examples/more"
+    "ts-more": "ts-node ./examples/more.ts"
   },
   "dependencies": {
     "clickhouse": "^2.4.0",

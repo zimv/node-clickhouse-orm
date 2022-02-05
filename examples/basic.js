@@ -1,5 +1,5 @@
-const { ClickHouse } = require('clickhouse');
-const { ClickHouseOrm, VALIDATION_COLUMN_VALUE_TYPE, setLogService} = require('../dist/lib');
+
+const { ClickhouseOrm, DATA_TYPE, setLogService} = require('../dist/lib');
 
 /**
  * defined Schema 
@@ -7,9 +7,9 @@ const { ClickHouseOrm, VALIDATION_COLUMN_VALUE_TYPE, setLogService} = require('.
 const table1Schema = {
   tableName: 'table1',
   schema: {
-    time: { type: VALIDATION_COLUMN_VALUE_TYPE.DateTime, default: Date },
-    status: { type: VALIDATION_COLUMN_VALUE_TYPE.Int32 },
-    browser: { type: VALIDATION_COLUMN_VALUE_TYPE.String },
+    time: { type: DATA_TYPE.DateTime, default: Date },
+    status: { type: DATA_TYPE.Int32 },
+    browser: { type: DATA_TYPE.String },
     browser_v: {},
   },
   createTable: (dbTableName) => {
@@ -29,25 +29,24 @@ const table1Schema = {
 }
 
 /**
- * new ClickHouse
- */
-const client = new ClickHouse({
-  url: 'localhost',
-  port: '8123',
-  basicAuth: {
-    username: 'default',
-    password: '',
-  },
-  debug: false,
-  isUseGzip: true,
-  format: 'json', // "json" || "csv" || "tsv"
-});
-
-/**
  * new Orm
  */
 const db = 'orm_test';
-const chOrm = ClickHouseOrm({client, db, debug:true});
+const chOrm = ClickhouseOrm({
+  client: {
+    url: 'localhost',
+    port: '8123',
+    basicAuth: {
+      username: 'default',
+      password: '',
+    },
+    debug: false,
+    isUseGzip: true,
+    format: 'json', // "json" || "csv" || "tsv"
+  }, 
+  db,
+  debug:true
+});
 
 const doDemo = async ()=>{
   // create database 'orm_test'
@@ -67,11 +66,14 @@ const doDemo = async ()=>{
 
   // do save 
   data.save().then((res)=>{
-    console.log(res);
+    console.log('save:', res);
 
-    // do select
+    // do find
     Table1Model.find({
-      select: '*'
+      select: '*',
+      limit: 3
+    }).then((res)=>{
+      console.log('find:', res);
     });
   });
 }
