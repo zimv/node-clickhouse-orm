@@ -317,7 +317,7 @@ const list = [
 
 Table1Model.insertMany(
   list.map(item=>{
-    const data = Model();
+    const data = Table1Model();
     // set value
     data.time = new Date();
     data.status = item.status;
