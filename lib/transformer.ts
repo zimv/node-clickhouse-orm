@@ -16,7 +16,7 @@ export const insertSQL = (table: string, keys: string[]) => {
 
 
 export interface SqlObject {
-  select: string;
+  select?: string;
   where?: string;
   limit?: number;
   skip?: number;

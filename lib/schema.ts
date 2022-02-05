@@ -1,8 +1,8 @@
 import { ClickHouse } from 'clickhouse';
 import { getPureData, insertSQL } from './transformer';
-import { VALIDATION_COLUMN_VALUE_TYPE } from './constants';
-import { isObject } from './utils';
-import { DebugLog } from './log';
+import { DATA_TYPE } from './constants';
+import { isObject, isObjectDate } from './utils';
+import { DebugLog, ErrorLog } from './log';
 
 
 export class DataInstance {
@@ -26,7 +26,7 @@ export class DataInstance {
   }
 }
 export interface SchemaObj {
-  type?: VALIDATION_COLUMN_VALUE_TYPE;
+  type?: DATA_TYPE;
   default?: any;
 }
 export interface SchemaOptions {
@@ -73,33 +73,39 @@ export default class Schema {
         return value;
       },
       set: function (newVal) {
-        // validate value type
-        switch (obj[column].type) {
-          case 'boolean':
-            if (typeof newVal !== 'boolean') {
-              throw new Error(`column[${column}]-value(${newVal}): Type '${typeof newVal}' is not assignable to type 'boolean'`);
-            }
-            break;
-          case 'string':
-            if (typeof newVal !== 'string') {
-              throw new Error(`column[${column}]-value(${newVal}): Type '${typeof newVal}' is not assignable to type 'string'`);
-            }
-            break;
-          case 'number':
-            if (typeof newVal !== 'number') {
-              throw new Error(`column[${column}]-value(${newVal}): Type '${typeof newVal}' is not assignable to type 'number'`);
-            }
-            break;
-          case 'object':
-              if (isObject(newVal)) {
-                throw new Error(`column[${column}]-value(${newVal}): Type '${typeof newVal}' is not assignable to type 'object'`);
+        if(obj[column].type){
+          const types = obj[column].type.split('|');
+          if(types.length){
+            const verificationPass = types.filter(type=>{
+              // validate value type
+              switch (type) {
+                case 'boolean':
+                  if (typeof newVal === 'boolean') return true;
+                  break;
+                case 'string':
+                  if (typeof newVal === 'string') return true;
+                  break;
+                case 'number':
+                  if (typeof newVal === 'number') return true;
+                  break;
+                case 'object':
+                  if (isObject(newVal)) return true;
+                  break;
+                case 'date':
+                  if (isObjectDate(newVal)) return true;
+                  break;
+                case 'array':
+                  if (Array.isArray(newVal)) return true;
+                  break;
               }
-              break;
-          case 'array':
-            if (Array.isArray(newVal)) {
-              throw new Error(`column[${column}]-value(${newVal}): Type '${typeof newVal}' is not assignable to type 'array'`);
+              return false;
+            })
+            if(verificationPass.length === 0){
+              const info = `column[${column}]-value(${newVal}): Type '${typeof newVal}' is not assignable to type '${obj[column].type}'`;
+              ErrorLog(info);
+              throw new Error(info);
             }
-            break;
+          }
         }
         value = newVal;
         return newVal;
