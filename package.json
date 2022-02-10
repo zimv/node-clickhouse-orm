@@ -1,6 +1,6 @@
 {
   "name": "clickhouse-orm",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Clickhouse orm for Nodejs",
   "repository": {
     "type": "git",
