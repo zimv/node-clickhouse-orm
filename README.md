@@ -1,3 +1,9 @@
+<a href="https://www.npmjs.com/package/clickhouse-orm" alt="NPM latest version"><img src="https://img.shields.io/npm/v/clickhouse-orm.svg"></a>
+<a href="https://npms.io/search?q=clickhouse-orm" alt="NPM latest version"><img src="https://badges.npms.io/clickhouse-orm.svg"></a>
+<a href="https://www.npmjs.com/package/clickhouse-orm" alt="NPM total downloads"><img src="https://img.shields.io/npm/dt/clickhouse-orm.svg"></a>
+<a href="https://github.com/zimv/node-clickhouse-orm" alt="Github stars"><img src="https://img.shields.io/github/stars/zimv/node-clickhouse-orm.svg?style=social&label=Star"></a>
+<a href="https://github.com/zimv/node-clickhouse-orm" alt="Github forks"><img src="https://img.shields.io/github/forks/zimv/node-clickhouse-orm.svg?style=social&label=Fork"></a>
+<a href="https://github.com/zimv/node-clickhouse-orm" alt="Github contributors"><img src="https://img.shields.io/github/contributors/zimv/node-clickhouse-orm.svg"></a>
 # clickhouse-orm
 Clickhouse ORM for Nodejs. Send query over HTTP interface. Using [TimonKK/clickhouse](https://github.com/TimonKK/clickhouse).
 
@@ -7,9 +13,9 @@ Clickhouse ORM for Nodejs. Send query over HTTP interface. Using [TimonKK/clickh
 npm i clickhouse-orm 
 ``` 
 
-# [Basic Example](https://github.com/zimv/node-clickhouse-orm/blob/main/examples/basic.js)
+# Usage
 
-Create instance：
+**Create instance：**
 
 
 ```javascript
@@ -18,6 +24,7 @@ const { ClickhouseOrm, DATA_TYPE, setLogService} = require('clickhouse-orm');
 
 const chOrm = ClickhouseOrm({
   db: 'orm_test',
+  debug: true,
   client: {
     url: 'localhost',
     port: '8123',
@@ -28,13 +35,12 @@ const chOrm = ClickhouseOrm({
     debug: false,
     isUseGzip: true,
     format: 'json', // "json" || "csv" || "tsv"
-  }, 
-  debug:true
+  },
 });
 
 ```
 
-Define Schema：
+**Define Schema：**
 ```javascript
 const table1Schema = {
   // table name
@@ -64,7 +70,7 @@ const table1Schema = {
 }
 ```
 
-Use 'save()' and 'find()'：
+**save / find：**
 ```javascript
 const doDemo = async ()=>{
   // create database 'orm_test'
@@ -101,24 +107,27 @@ const doDemo = async ()=>{
 doDemo();
 ```
 
+More in [Basic Example](https://github.com/zimv/node-clickhouse-orm/blob/main/examples/basic.js).
 
-# Use
-### Execute SQL：
-```javascript
-chOrm.client.query(`select * from orm_test.table1 limit 3`).toPromise().then(res=>{
-  console.log('Use sql:', res);
-});
-```
+# Overview
+### ClickhouseOrm
+`db` : string
+> Database name
 
-The `chOrm.client` is the [TimonKK/clickhouse](https://github.com/TimonKK/clickhouse) instance.
+`debug` : boolean
+> Default: false
 
-
+`client` : object
+> Drive configuration. More in [TimonKK/clickhouse](https://github.com/TimonKK/clickhouse).
 ### Schema
-`tableName`:  It is the table name.
+`tableName` : string
+> It is the table name.
 
-`schema { [column]: { type?, default? } } `: The `type` will be verified, The `default` is the default value for column.
+`schema` :  { [column]: { type?, default? } } 
+> The `type` will be verified, The `default` is the default value for column.
 
-`createTable`:   It is the SQL for creating tables.When schemaregister is executed, this SQL will be executed.
+`createTable` : string
+> It is the SQL for creating tables.When schemaregister is executed, this SQL will be executed.
 
 
 
@@ -197,13 +206,17 @@ schema: {
 }
 ```
 
-### setLogService
-Default: console.log
+### Log
+The **setLogService** is a global configuration method and will affect all instances.
 
 
-Custom example:  [winstonjs](https://github.com/winstonjs)/**[winston](https://github.com/winstonjs/winston)**
+```Default: console.log```
+
+
+Custom example:  **[winston](https://github.com/winstonjs/winston)**
 
 ```javascript
+const { setLogService } = require('clickhouse-orm');
 const winston = require('winston');
 const logger = winston.createLogger();
 
@@ -211,8 +224,19 @@ setLogService(logger.info);
 ```
 
 
+### Use SQL directly：
+```javascript
+chOrm.client.query(`select * from orm_test.table1 limit 3`).toPromise().then(res=>{
+  console.log('Use sql:', res);
+});
+```
+
+The `chOrm.client` is the [TimonKK/clickhouse](https://github.com/TimonKK/clickhouse) instance.
+
+
+
 # [More Examples](https://github.com/zimv/node-clickhouse-orm/blob/main/examples/more.ts)
-### Query Example
+### Find
 
 ```javascript
 import * as dayjs from 'dayjs';
@@ -246,12 +270,12 @@ const queryExample1 = ({
   })
 }
 ```
-SQL:
+Final executed SQL:
 ```sql
 SELECT * from orm_test.table1 where status='1' and time>='2022-02-04 15:34:22' and time<='2022-02-05 15:34:22'  ORDER BY time ASC LIMIT 5
 ```
 
-### Count Example
+### Count
 
 ```javascript
 countExample1({
@@ -268,12 +292,12 @@ const countExample1 = ({
   })
 }
 ```
-SQL:
+Final executed SQL:
 ```sql
 SELECT count(*) AS total from orm_test.table1
 ```
 
-### Group Example
+### GroupBy
 
 ```javascript
 Table1Model.find({
@@ -282,12 +306,13 @@ Table1Model.find({
 })
 ```
 
-SQL:
+Final executed SQL:
 ```sql
 SELECT status,browser from orm_test.table1  GROUP BY status,browser
 ```
 
-### Array find Example
+### Nested Queries
+
 
 ```javascript
 Table1Model.find([
@@ -301,12 +326,33 @@ Table1Model.find([
 ])
 ```
 
-SQL:
+Final executed SQL:
 ```sql
 SELECT count() as browserTotal from (SELECT browser from orm_test.table1  GROUP BY browser  )
 ```
 
-### insertMany Example
+### Save
+```
+// new data model
+const data = Table1Model();
+
+// set value
+data.time = new Date();
+data.status = 1;
+data.browser = 'chrome';
+data.browser_v = '90.0.1.21';
+
+// do save 
+data.save().then((res)=>{
+  console.log('save:', res);
+});
+```
+Final executed SQL:
+```
+INSERT INTO orm_test.table1 (time,status,browser,browser_v) [{"time":"2022-02-05T07:51:16.919Z","status":1,"browser":"chrome","browser_v":"90.0.1.21"}]\
+```
+
+### InsertMany
 
 ```javascript
 const list = [
@@ -327,8 +373,11 @@ Table1Model.insertMany(
   })
 )
 ```
-SQL:
+Final executed SQL:
 ```sql
 INSERT INTO orm_test.table1 (time,status,browser,browser_v) [{"time":"2022-02-05T07:34:22.226Z","status":2,"browser":"IE","browser_v":"10.0.1.21"},{"time":"2022-02-05T07:34:22.226Z","status":2,"browser":"FF","browser_v":"2.0.3"},{"time":"2022-02-05T07:34:22.226Z","status":3,"browser":"IE","browser_v":"1.1.1"}]
 ```
+
+# Wechat Discussion
+[Click to join](https://github.com/zimv/node-clickhouse-orm/issues/3)
 
