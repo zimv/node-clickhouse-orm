@@ -28,7 +28,7 @@ export default class ClickhouseOrm {
     this.debug = debug;
   }
   createDatabase(){
-    Log(`create database ${this.db}`);
+    Log(`CREATE DATABASE IF NOT EXISTS ${this.db}`);
     return this.client.query(`CREATE DATABASE IF NOT EXISTS ${this.db}`).toPromise();
   }
 
