@@ -52,7 +52,7 @@ const doDemo = async ()=>{
   await chOrm.createDatabase();
 
   // register schema and create [if] table
-  const Table1Model = await chOrm.schemaRegister(table1Schema);
+  const Table1Model = await chOrm.registerSchema(table1Schema);
 
   // new data model
   const data = Table1Model();

@@ -77,7 +77,7 @@ const doDemo = async ()=>{
   await chOrm.createDatabase();
   
   // register schema and create [if] table
-  const Table1Model = await chOrm.schemaRegister(table1Schema);
+  const Table1Model = await chOrm.registerSchema(table1Schema);
 
   // new data model
   const data = Table1Model();
@@ -127,7 +127,7 @@ More in [Basic Example](https://github.com/zimv/node-clickhouse-orm/blob/main/ex
 > The `type` will be verified, The `default` is the default value for column.
 
 `createTable` : string
-> It is the SQL for creating tables.When schemaregister is executed, this SQL will be executed.
+> It is the SQL for creating tables.When registerSchema is executed, this SQL will be executed. It is suggested to add 'IF NOT EXISTS'.
 
 
 
@@ -163,7 +163,7 @@ const table1Schema = {
 }
 
 // register schema and create [if] table
-const Table1Model = await chOrm.schemaRegister(table1Schema);
+const Table1Model = await chOrm.registerSchema(table1Schema);
 ```
 
 ### DATA_TYPE
