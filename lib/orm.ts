@@ -36,16 +36,16 @@ export default class ClickhouseOrm {
    * @remark
    * The createDatabase must be completed 
    */
-  registerSchema = async ({ tableName, schema, createTable }: RigisterParams) => {
+  model = async ({ tableName, schema, createTable }: RigisterParams) => {
     const dbTableName = `${this.db}.${tableName}`;
 
     // create table
     const createSql = createTable(dbTableName);
-    if(this.debug) DebugLog(`execute registerSchema> ${createSql}`);
+    if(this.debug) DebugLog(`execute model> ${createSql}`);
     await this.client.query(createSql).toPromise();
-    return this.model(dbTableName, new Schema(schema));
+    return this.registerModel(dbTableName, new Schema(schema));
   }
-  model(tableName, schema) {
+  registerModel(tableName, schema) {
     const table = tableName;
     const client = this.client;
     schema.setOptions({
