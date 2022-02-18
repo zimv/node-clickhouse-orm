@@ -22,6 +22,7 @@ export default class ClickhouseOrm {
   client;
   db;
   debug;
+  models;
   constructor({ client, db, debug }: OrmInitParams) {
     this.client = client;
     this.db = db;
@@ -34,7 +35,7 @@ export default class ClickhouseOrm {
 
   /**
    * @remark
-   * The createDatabase must be completed 
+   * The createDatabase must be completed
    */
   registerSchema = async ({ tableName, schema, createTable }: RigisterParams) => {
     const dbTableName = `${this.db}.${tableName}`;
@@ -43,8 +44,11 @@ export default class ClickhouseOrm {
     const createSql = createTable(dbTableName);
     if(this.debug) DebugLog(`execute registerSchema> ${createSql}`);
     await this.client.query(createSql).toPromise();
-    return this.model(dbTableName, new Schema(schema));
-  }
+    this.models[tableName] = this.model(dbTableName, new Schema(schema));
+
+    return this.models[tableName];
+  };
+
   model(tableName, schema) {
     const table = tableName;
     const client = this.client;
@@ -68,6 +72,7 @@ export default class ClickhouseOrm {
       if(this.debug) DebugLog(`[>>EXECUTE FIND<<] ${sql}`);
       return client.query(sql).toPromise();
     };
+    // save list
     instanceModel.insertMany = (dataArray) => {
       const datas = dataArray.map((item) => {
         return getPureData(schema.columns, item);
@@ -80,6 +85,21 @@ export default class ClickhouseOrm {
           .toPromise();
       }
     };
+
+    // save
+    instanceModel.insert = (obj) => {
+      const model = this.models[schema.table];
+      // new data model
+      const data = model();
+
+      Object.keys(obj).forEach((i) => {
+        data[i] = obj[i];
+      });
+
+      // do save
+      return data.save();
+    };
+
     return instanceModel;
   }
 }
