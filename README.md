@@ -80,7 +80,7 @@ const doDemo = async ()=>{
   const Table1Model = await chOrm.model(table1Schema);
 
   // new data model
-  const data = Table1Model();
+  const data = Table1Model.create();
 
   // set value
   data.time = new Date();
@@ -334,7 +334,7 @@ SELECT count() as browserTotal from (SELECT browser from orm_test.table1  GROUP
 ### Save
 ```
 // new data model
-const data = Table1Model();
+const data = Table1Model.create();
 
 // set value
 data.time = new Date();
@@ -363,7 +363,7 @@ const list = [
 
 Table1Model.insertMany(
   list.map(item=>{
-    const data = Table1Model();
+    const data = Table1Model.create();
     // set value
     data.time = new Date();
     data.status = item.status;
@@ -372,6 +372,8 @@ Table1Model.insertMany(
     return data;
   })
 )
+// or
+Table1Model.insertMany(list)
 ```
 Final executed SQL:
 ```sql
