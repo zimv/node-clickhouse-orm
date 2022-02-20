@@ -52,14 +52,15 @@ const doDemo = async ()=>{
   await chOrm.createDatabase();
 
   // register schema and create [if] table
-  const Table1Model = await chOrm.schemaRegister(table1Schema);
+  const Table1Model = await chOrm.model(table1Schema);
+
+  console.log(chOrm.models);
 
   // new data model
-  const data = Table1Model();
-
+  const data = Table1Model.create({status:2});
+  
   // set value
   data.time = new Date();
-  data.status = 1;
   data.browser = 'chrome';
   data.browser_v = '90.0.1.21';
 

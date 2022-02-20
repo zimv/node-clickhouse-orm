@@ -1,11 +1,11 @@
-import { DataInstance} from './schema';
+import { DataInstance } from './model';
 /**
  * Get a pure data instead of a model instance
  */
-export const getPureData = (keys: string[], schemaInstance: DataInstance) => {
+export const getPureData = (keys: string[], dataInstance: DataInstance) => {
   const data = {};
   keys.forEach((key) => {
-    data[key] = schemaInstance[key] != undefined ? schemaInstance[key] : null;
+    data[key] = dataInstance[key] != undefined ? dataInstance[key] : null;
   });
   return data;
 };

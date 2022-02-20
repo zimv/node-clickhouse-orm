@@ -1,38 +1,12 @@
-import { ClickHouse } from 'clickhouse';
-import { getPureData, insertSQL } from './transformer';
 import { DATA_TYPE } from './constants';
+import { DataInstance } from './model';
 import { isObject, isObjectDate } from './utils';
-import { DebugLog, ErrorLog } from './log';
+import { ErrorLog } from './log';
 
 
-export class DataInstance {
-  private schema;
-  constructor(schemaThis: Schema) {
-    this.schema = schemaThis;
-    this.proxyApply();
-  }
-  proxyApply() {
-    this.schema.columns.forEach((column) => {
-      this.schema.proxyAttr(this.schema.obj, this, column);
-    });
-  }
-  save() {
-    const data = getPureData(this.schema.columns, this);
-    const insertHeaders = insertSQL(this.schema.table, this.schema.columns);
-    if(this.schema.debug) DebugLog(`execute save> ${insertHeaders} ${JSON.stringify([data])}`);
-    return this.schema.client
-      .insert(insertHeaders, [data])
-      .toPromise();
-  }
-}
 export interface SchemaObj {
   type?: DATA_TYPE;
   default?: any;
-}
-export interface SchemaOptions {
-  client: ClickHouse;
-  table: string;
-  debug: boolean;
 }
 
 export default class Schema {
@@ -40,23 +14,12 @@ export default class Schema {
   public obj;
   public columns;
 
-  public client;
-  public table;
-  public debug;
-
   constructor(schemaObj: SchemaObj) {
+    
     this.obj = schemaObj;
     this.columns = Object.keys(schemaObj);
-    return this;
-  }
-  setOptions({ client, table, debug }: SchemaOptions) {
-    this.client = client;
-    this.table = table;
-    this.debug = debug;
-  }
 
-  createModel() {
-    return new DataInstance(this);
+    return this;
   }
 
   proxyAttr(obj: SchemaObj, data: DataInstance, column: string) {

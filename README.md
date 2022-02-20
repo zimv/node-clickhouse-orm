@@ -77,10 +77,10 @@ const doDemo = async ()=>{
   await chOrm.createDatabase();
   
   // register schema and create [if] table
-  const Table1Model = await chOrm.schemaRegister(table1Schema);
+  const Table1Model = await chOrm.model(table1Schema);
 
   // new data model
-  const data = Table1Model();
+  const data = Table1Model.create();
 
   // set value
   data.time = new Date();
@@ -127,7 +127,7 @@ More in [Basic Example](https://github.com/zimv/node-clickhouse-orm/blob/main/ex
 > The `type` will be verified, The `default` is the default value for column.
 
 `createTable` : string
-> It is the SQL for creating tables.When schemaregister is executed, this SQL will be executed.
+> It is the SQL for creating tables.When model is executed, this SQL will be executed. It is suggested to add 'IF NOT EXISTS'.
 
 
 
@@ -163,7 +163,7 @@ const table1Schema = {
 }
 
 // register schema and create [if] table
-const Table1Model = await chOrm.schemaRegister(table1Schema);
+const Table1Model = await chOrm.model(table1Schema);
 ```
 
 ### DATA_TYPE
@@ -334,7 +334,7 @@ SELECT count() as browserTotal from (SELECT browser from orm_test.table1  GROUP
 ### Save
 ```
 // new data model
-const data = Table1Model();
+const data = Table1Model.create();
 
 // set value
 data.time = new Date();
@@ -363,7 +363,7 @@ const list = [
 
 Table1Model.insertMany(
   list.map(item=>{
-    const data = Table1Model();
+    const data = Table1Model.create();
     // set value
     data.time = new Date();
     data.status = item.status;
@@ -372,6 +372,8 @@ Table1Model.insertMany(
     return data;
   })
 )
+// or
+Table1Model.insertMany(list)
 ```
 Final executed SQL:
 ```sql

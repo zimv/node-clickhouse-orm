@@ -53,7 +53,7 @@ const doDemo = async ()=>{
   await chOrm.createDatabase();
 
   // register schema and create [if] table
-  const Table1Model = await chOrm.schemaRegister(table1Schema);
+  const Table1Model = await chOrm.model(table1Schema);
 
 
   // chOrm.client: TimonKK/ClickHouse instance
@@ -163,7 +163,7 @@ const insertManyExample = ({
 
   return Model.insertMany(
     list.map(item=>{
-      const data = Model();
+      const data = Model.create();
       // set value
       data.time = new Date();
       data.status = item.status;

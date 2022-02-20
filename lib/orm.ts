@@ -1,5 +1,5 @@
 import { ClickHouse } from 'clickhouse';
-import { getPureData, insertSQL, object2Sql, SqlObject } from './transformer';
+import Model from './model';
 import Schema from './schema';
 import { Log, DebugLog } from './log';
 
@@ -22,13 +22,15 @@ export default class ClickhouseOrm {
   client;
   db;
   debug;
+  models={};
+
   constructor({ client, db, debug }: OrmInitParams) {
     this.client = client;
     this.db = db;
     this.debug = debug;
   }
   createDatabase(){
-    Log(`create database ${this.db}`);
+    Log(`CREATE DATABASE IF NOT EXISTS ${this.db}`);
     return this.client.query(`CREATE DATABASE IF NOT EXISTS ${this.db}`).toPromise();
   }
 
@@ -36,50 +38,22 @@ export default class ClickhouseOrm {
    * @remark
    * The createDatabase must be completed 
    */
-  schemaRegister = async ({ tableName, schema, createTable }: RigisterParams) => {
+  async model({ tableName, schema, createTable }: RigisterParams) {
     const dbTableName = `${this.db}.${tableName}`;
-
     // create table
     const createSql = createTable(dbTableName);
-    if(this.debug) DebugLog(`execute schemaRegister> ${createSql}`);
+    if(this.debug) DebugLog(`execute model> ${createSql}`);
     await this.client.query(createSql).toPromise();
-    return this.model(dbTableName, new Schema(schema));
-  }
-  model(tableName, schema) {
-    const table = tableName;
-    const client = this.client;
-    schema.setOptions({
-      client,
-      table,
+
+    const schemaInstance = new Schema(schema)
+
+    const modelInstance = new Model(schemaInstance,  {
+      client: this.client,
+      dbTableName,
       debug: this.debug,
     });
 
-    function instanceModel() {
-      const data = schema.createModel();
-      return data;
-    }
-    instanceModel.find = (qObjArray: SqlObject[] | SqlObject) => {
-      if(!Array.isArray(qObjArray)) qObjArray = [qObjArray];
-      let sql = '';
-      qObjArray.map((qObj, index)=>{
-        if(index === 0) sql = object2Sql(table, qObj);
-        else sql = object2Sql(`(${sql})`, qObj);
-      })
-      if(this.debug) DebugLog(`[>>EXECUTE FIND<<] ${sql}`);
-      return client.query(sql).toPromise();
-    };
-    instanceModel.insertMany = (dataArray) => {
-      const datas = dataArray.map((item) => {
-        return getPureData(schema.columns, item);
-      });
-      if (datas && datas.length > 0) {
-        const insertHeaders = insertSQL(schema.table, schema.columns);
-        if(this.debug) DebugLog(`[>>EXECUTE INSERTMANY<<] ${insertHeaders} ${JSON.stringify(datas)}`);
-        return client
-          .insert(insertHeaders, datas)
-          .toPromise();
-      }
-    };
-    return instanceModel;
+    this.models[tableName] = modelInstance;
+    return modelInstance;
   }
 }
