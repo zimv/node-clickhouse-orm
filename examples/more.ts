@@ -98,7 +98,14 @@ const doDemo = async ()=>{
   }).then(res=>{
     console.log('insertManyExample:', res);
   });
-  
+
+  // insertMany example2
+  await insertManyExample2({
+    Model: Table1Model,
+  }).then(res=>{
+    console.log('insertManyExample2:', res);
+  });
+
 }
 
 const queryExample1 = ({
@@ -172,6 +179,17 @@ const insertManyExample = ({
       return data;
     })
   )
+}
+
+const insertManyExample2 = ({
+  Model,
+}) => {
+  const list = [
+    { status: 4, browser: 'Chrome', browser_v: '10.0.1.21' },
+    { status: 5, browser: 'Chrome', browser_v: '2.0.3' },
+  ];
+
+  return Model.insertMany(list)
 }
 
 doDemo();
