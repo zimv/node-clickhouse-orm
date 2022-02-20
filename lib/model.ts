@@ -1,7 +1,8 @@
 import { ClickHouse } from 'clickhouse';
 import { getPureData, insertSQL, object2Sql, SqlObject } from './transformer';
 import Schema from './schema';
-import { Log, DebugLog } from './log';
+import { ErrorLog, DebugLog } from './log';
+import { isObject } from './utils';
 
 export interface OrmInitParams {
   client: ClickHouse;
@@ -27,13 +28,26 @@ export interface ModelOptions {
 export class DataInstance {
   [key:string]: any;
   private model;
-  constructor(model: Model) {
+  constructor(model: Model, initData?: Object) {
     this.model = model;
     this.proxyApply();
+    initData && isObject(initData) && this.setInitData(initData);
+  }
+  private setInitData(initData: Object) {
+    Object.keys(initData).forEach((column: string) => {
+      if(this.checkColumnExist(column)) this[column] = initData[column];
+    });
+  }
+  private checkColumnExist(column) {
+    if(this.model.schemaInstance.columns.indexOf(column) === -1) {
+      ErrorLog(`'${column}' is not a column of '${this.model.dbTableName}'. It should include ${this.model.schemaInstance.columns.join('、')}`);
+      return false;
+    }
+    return true;
   }
   private proxyApply() {
     const schemaInstance = this.model.schemaInstance;
-    schemaInstance.columns.forEach((column) => {
+    schemaInstance.columns.forEach((column: string) => {
       schemaInstance.proxyAttr(schemaInstance.obj, this, column);
     });
   }
@@ -66,8 +80,8 @@ export default class Model {
     return this;
   }
 
-  create() {
-    return new DataInstance(this);
+  create(initData?:Object) {
+    return new DataInstance(this, initData);
   }
 
   find(qObjArray: SqlObject[] | SqlObject): Promise<any> {
@@ -91,9 +105,9 @@ export default class Model {
       if (item instanceof DataInstance) {
         return getPureData(this.schemaInstance.columns, item);
       }else{
-        const data = new DataInstance(this);
-        Object.keys(item).forEach((i) => {
-          data[i] = item[i];
+        const data = new DataInstance(this,);
+        Object.keys(item).forEach((column: string) => {
+          data[column] = item[column];
         });
         return getPureData(this.schemaInstance.columns, data);
       }

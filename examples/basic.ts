@@ -57,11 +57,10 @@ const doDemo = async ()=>{
   console.log(chOrm.models);
 
   // new data model
-  const data = Table1Model.create();
+  const data = Table1Model.create({status:2});
   
   // set value
   data.time = new Date();
-  data.status = 1;
   data.browser = 'chrome';
   data.browser_v = '90.0.1.21';
 

@@ -1,9 +1,7 @@
-import { ClickHouse } from 'clickhouse';
-import { getPureData, insertSQL } from './transformer';
 import { DATA_TYPE } from './constants';
 import { DataInstance } from './model';
 import { isObject, isObjectDate } from './utils';
-import { DebugLog, ErrorLog } from './log';
+import { ErrorLog } from './log';
 
 
 export interface SchemaObj {

@@ -1,5 +1,4 @@
 import { ClickHouse } from 'clickhouse';
-import { getPureData, insertSQL, object2Sql, SqlObject } from './transformer';
 import Model from './model';
 import Schema from './schema';
 import { Log, DebugLog } from './log';
