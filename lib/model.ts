@@ -95,12 +95,20 @@ export default class Model {
     return this.client.query(sql).toPromise();
   };
 
-  create() {
+  create(obj: Object) {
+    // new data model
+    const instance = this.build();
 
+    Object.keys(obj).forEach((i) => {
+      instance[i] = obj[i];
+    });
+
+    // do save
+    return instance.save();
   }
 
   insertMany(dataArray: Array<Object>|Array<DataInstance>): Promise<any> {
-  
+
     const datas = [...dataArray].map((item: Object|DataInstance) => {
       if (item instanceof DataInstance) {
         return getPureData(this.schemaInstance.columns, item);
@@ -112,7 +120,7 @@ export default class Model {
         return getPureData(this.schemaInstance.columns, data);
       }
     })
-    
+
     if (datas && datas.length > 0) {
       const insertHeaders = insertSQL(this.dbTableName, this.schemaInstance.columns);
       if(this.debug) DebugLog(`[>>EXECUTE INSERTMANY<<] ${insertHeaders} ${JSON.stringify(datas)}`);
@@ -120,6 +128,7 @@ export default class Model {
         .insert(insertHeaders, datas)
         .toPromise();
     }
-  };
-  
+
+    return Promise.resolve({ r: 0 });
+  }
 }

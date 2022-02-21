@@ -70,7 +70,7 @@ const table1Schema = {
 }
 ```
 
-**save / find：**
+**create / find：**
 ```javascript
 const doDemo = async ()=>{
   // create database 'orm_test'
@@ -79,19 +79,15 @@ const doDemo = async ()=>{
   // register schema and create [if] table
   const Table1Model = await chOrm.model(table1Schema);
 
-  // new data model
-  const data = Table1Model.build();
-
-  // set value
-  data.time = new Date();
-  data.status = 1;
-  data.browser = 'chrome';
-  data.browser_v = '90.0.1.21';
-
-  // do save 
-  data.save().then((res)=>{
+  // do create
+  Table1Model.create({
+      status: 1,
+      time: new Date(),
+      browser: 'chrome',
+      browser_v: '90.0.1.21'
+  }).then((res)=>{
     // SQL: INSERT INTO orm_test.table1 (time,status,browser,browser_v) [{"time":"2022-02-05T07:51:16.919Z","status":1,"browser":"chrome","browser_v":"90.0.1.21"}]
-    console.log('save:', res);
+    console.log('create:', res);
 
     // do find
     Table1Model.find({
@@ -331,7 +327,7 @@ Final executed SQL:
 SELECT count() as browserTotal from (SELECT browser from orm_test.table1  GROUP BY browser  )
 ```
 
-### Save
+### create
 ```
 // new data model
 const data = Table1Model.build();
@@ -342,9 +338,14 @@ data.status = 1;
 data.browser = 'chrome';
 data.browser_v = '90.0.1.21';
 
-// do save 
-data.save().then((res)=>{
-  console.log('save:', res);
+// do create 
+data.create({
+    status: 1,
+    time: new Date(),
+    browser: 'chrome',
+    browser_v: '90.0.1.21'
+}).then((res)=>{
+  console.log('crate:', res);
 });
 ```
 Final executed SQL:

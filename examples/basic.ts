@@ -57,16 +57,13 @@ const doDemo = async ()=>{
   console.log(chOrm.models);
 
   // new data model
-  const data = Table1Model.build({status:2});
-  
-  // set value
-  data.time = new Date();
-  data.browser = 'chrome';
-  data.browser_v = '90.0.1.21';
-
-  // do save 
-  data.save().then((res)=>{
-    console.log('save:', res);
+  Table1Model.create({
+    status: 2,
+    time: new Date(),
+    browser: 'chrome',
+    browser_v: '90.0.1.21'
+  }).then((res)=>{
+    console.log('create:', res);
 
     // do find
     Table1Model.find({
