@@ -26,8 +26,8 @@ export default class Schema {
     let value;
     // set default value
     const defaultVal = obj[column].default;
-    if (typeof defaultVal !== 'undefined') {
-      if (defaultVal === Date.now || defaultVal === Date) value = new Date();
+    if(typeof defaultVal !== 'undefined') {
+      if(defaultVal === Date.now || defaultVal === Date) value = new Date();
       else value = defaultVal;
     }
     Object.defineProperty(data, column, {
@@ -43,22 +43,22 @@ export default class Schema {
               // validate value type
               switch (type) {
                 case 'boolean':
-                  if (typeof newVal === 'boolean') return true;
+                  if(typeof newVal === 'boolean') return true;
                   break;
                 case 'string':
-                  if (typeof newVal === 'string') return true;
+                  if(typeof newVal === 'string') return true;
                   break;
                 case 'number':
-                  if (typeof newVal === 'number') return true;
+                  if(typeof newVal === 'number') return true;
                   break;
                 case 'object':
-                  if (isObject(newVal)) return true;
+                  if(isObject(newVal)) return true;
                   break;
                 case 'date':
-                  if (isObjectDate(newVal)) return true;
+                  if(isObjectDate(newVal)) return true;
                   break;
                 case 'array':
-                  if (Array.isArray(newVal)) return true;
+                  if(Array.isArray(newVal)) return true;
                   break;
               }
               return false;
