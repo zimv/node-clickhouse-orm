@@ -102,18 +102,17 @@ export default class Model {
   insertMany(dataArray: Array<Object>|Array<DataInstance>): Promise<any> {
   
     const datas = [...dataArray].map((item: Object|DataInstance) => {
-      if (item instanceof DataInstance) {
-        return getPureData(this.schemaInstance.columns, item);
+      let data;
+      if(item instanceof DataInstance) {
+        data = getPureData(this.schemaInstance.columns, item);
       }else{
-        const data = new DataInstance(this,);
-        Object.keys(item).forEach((column: string) => {
-          data[column] = item[column];
-        });
-        return getPureData(this.schemaInstance.columns, data);
+        const _data = new DataInstance(this, item);
+        data = getPureData(this.schemaInstance.columns, _data);
       }
+      return data;
     })
     
-    if (datas && datas.length > 0) {
+    if(datas && datas.length > 0) {
       const insertHeaders = insertSQL(this.dbTableName, this.schemaInstance.columns);
       if(this.debug) DebugLog(`[>>EXECUTE INSERTMANY<<] ${insertHeaders} ${JSON.stringify(datas)}`);
       return this.client
