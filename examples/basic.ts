@@ -30,7 +30,10 @@ const table1Schema = {
 /**
  * new Orm
  */
-const db = 'orm_test';
+const db = {
+  name: 'orm_test',
+  engine: 'Atomic',// default: Atomic
+}
 const chOrm = ClickhouseOrm({
   client: {
     url: 'localhost',

@@ -3,9 +3,13 @@ import Model from './model';
 import Schema from './schema';
 import { Log, DebugLog } from './log';
 
+export interface DbParams {
+  name: string;
+  engine?: string; // default: Atomic
+}
 export interface OrmInitParams {
   client: ClickHouse;
-  db: string;
+  db: DbParams;
   debug: boolean;
 }
 export interface OrmSchema {
@@ -19,9 +23,9 @@ export interface RigisterParams {
 }
 
 export default class ClickhouseOrm {
-  client;
-  db;
-  debug;
+  client: ClickHouse;
+  db: DbParams;
+  debug: boolean;
   models={};
 
   constructor({ client, db, debug }: OrmInitParams) {
@@ -30,8 +34,11 @@ export default class ClickhouseOrm {
     this.debug = debug;
   }
   createDatabase(){
-    Log(`CREATE DATABASE IF NOT EXISTS ${this.db}`);
-    return this.client.query(`CREATE DATABASE IF NOT EXISTS ${this.db}`).toPromise();
+    const { name, engine } = this.db;
+    const createDatabaseSql = 
+      `CREATE DATABASE IF NOT EXISTS ${name} ${engine ? `ENGINE=${engine}` : ''}`;
+    Log(createDatabaseSql);
+    return this.client.query(createDatabaseSql).toPromise();
   }
 
   /**
@@ -39,7 +46,7 @@ export default class ClickhouseOrm {
    * The createDatabase must be completed 
    */
   async model({ tableName, schema, createTable }: RigisterParams) {
-    const dbTableName = `${this.db}.${tableName}`;
+    const dbTableName = `${this.db.name}.${tableName}`;
     // create table
     const createSql = createTable(dbTableName);
     if(this.debug) DebugLog(`execute model> ${createSql}`);

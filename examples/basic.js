@@ -31,7 +31,9 @@ const table1Schema = {
 /**
  * new Orm
  */
-const db = 'orm_test';
+const db = {
+  name: 'orm_test'
+};
 const chOrm = ClickhouseOrm({
   client: {
     url: 'localhost',
