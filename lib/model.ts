@@ -95,12 +95,16 @@ export default class Model {
     return this.client.query(sql).toPromise();
   };
 
-  create() {
+  create(obj: Object) {
+    // new data model
+    const instance = this.build(obj);
 
+    // do save
+    return instance.save();
   }
 
   insertMany(dataArray: Array<Object>|Array<DataInstance>): Promise<any> {
-  
+
     const datas = [...dataArray].map((item: Object|DataInstance) => {
       let data;
       if(item instanceof DataInstance) {
@@ -111,7 +115,7 @@ export default class Model {
       }
       return data;
     })
-    
+
     if(datas && datas.length > 0) {
       const insertHeaders = insertSQL(this.dbTableName, this.schemaInstance.columns);
       if(this.debug) DebugLog(`[>>EXECUTE INSERTMANY<<] ${insertHeaders} ${JSON.stringify(datas)}`);
@@ -119,6 +123,7 @@ export default class Model {
         .insert(insertHeaders, datas)
         .toPromise();
     }
-  };
-  
+
+    return Promise.resolve({ r: 0 });
+  }
 }
