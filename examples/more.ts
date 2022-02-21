@@ -31,7 +31,9 @@ const table1Schema = {
 /**
  * new Orm
  */
-const db = 'orm_test';
+const db = {
+  name: 'orm_test'
+};
 const chOrm = ClickhouseOrm({
   client: {
     url: 'localhost',
@@ -98,7 +100,14 @@ const doDemo = async ()=>{
   }).then(res=>{
     console.log('insertManyExample:', res);
   });
-  
+
+  // insertMany example2
+  await insertManyExample2({
+    Model: Table1Model,
+  }).then(res=>{
+    console.log('insertManyExample2:', res);
+  });
+
 }
 
 const queryExample1 = ({
@@ -163,7 +172,7 @@ const insertManyExample = ({
 
   return Model.insertMany(
     list.map(item=>{
-      const data = Model.create();
+      const data = Model.build();
       // set value
       data.time = new Date();
       data.status = item.status;
@@ -172,6 +181,17 @@ const insertManyExample = ({
       return data;
     })
   )
+}
+
+const insertManyExample2 = ({
+  Model,
+}) => {
+  const list = [
+    { status: 4, browser: 'Chrome', browser_v: '10.0.1.21' },
+    { status: 5, browser: 'Chrome', browser_v: '2.0.3' },
+  ];
+
+  return Model.insertMany(list)
 }
 
 doDemo();

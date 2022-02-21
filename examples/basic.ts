@@ -30,7 +30,10 @@ const table1Schema = {
 /**
  * new Orm
  */
-const db = 'orm_test';
+const db = {
+  name: 'orm_test',
+  engine: 'Atomic',// default: Atomic
+}
 const chOrm = ClickhouseOrm({
   client: {
     url: 'localhost',
@@ -56,25 +59,34 @@ const doDemo = async ()=>{
 
   console.log(chOrm.models);
 
+  // do create
+  await Table1Model.create({
+    status: 1,
+    time: new Date(),
+    browser: 'chrome',
+    browser_v: '90.0.1.21'
+  })
+
+  //or
+
   // new data model
-  const data = Table1Model.create({status:2});
-  
+  const data = Table1Model.build({status:2});
+
   // set value
   data.time = new Date();
   data.browser = 'chrome';
   data.browser_v = '90.0.1.21';
 
-  // do save 
-  data.save().then((res)=>{
-    console.log('save:', res);
+  // do save
+  const res = await data.save()
+  console.log('save:', res);
 
-    // do find
-    Table1Model.find({
-      select: '*',
-      limit: 3,
-    }).then((res)=>{
-      console.log('find:', res);
-    });
+  // do find
+  Table1Model.find({
+    select: '*',
+    limit: 3,
+  }).then((res)=>{
+    console.log('find:', res);
   });
 }
 
