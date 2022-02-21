@@ -23,7 +23,9 @@ npm i clickhouse-orm
 const { ClickhouseOrm, DATA_TYPE, setLogService} = require('clickhouse-orm');
 
 const chOrm = ClickhouseOrm({
-  db: 'orm_test',
+  db: {
+    name: 'orm_test',
+  },
   debug: true,
   client: {
     url: 'localhost',
@@ -70,7 +72,7 @@ const table1Schema = {
 }
 ```
 
-**create/ build and save / find：**
+**create / build + save / find：**
 ```javascript
 const doDemo = async ()=>{
   // create database 'orm_test'
@@ -78,14 +80,6 @@ const doDemo = async ()=>{
   
   // register schema and create [if] table
   const Table1Model = await chOrm.model(table1Schema);
-
-  // do create
-  await Table1Model.create({
-      status: 1,
-      time: new Date(),
-      browser: 'chrome',
-      browser_v: '90.0.1.21'
-  })
     
   // new data model
   const data = Table1Model.build({status:2});
@@ -96,9 +90,18 @@ const doDemo = async ()=>{
   data.browser_v = '90.0.1.21';
     
   // do save
-  const res = await data.save()
+  const res = await data.save();
   // SQL: INSERT INTO orm_test.table1 (time,status,browser,browser_v) [{"time":"2022-02-05T07:51:16.919Z","status":2,"browser":"chrome","browser_v":"90.0.1.21"}]
   console.log('save:', res);
+
+  // create === build + save 
+  const resCreate = await Table1Model.create({
+      status: 1,
+      time: new Date(),
+      browser: 'chrome',
+      browser_v: '90.0.1.21'
+  })
+  console.log('create:', resCreate);
   
   // do find
   Table1Model.find({
@@ -116,9 +119,12 @@ doDemo();
 More in [Basic Example](https://github.com/zimv/node-clickhouse-orm/blob/main/examples/basic.js).
 
 # Overview
+`Note`: '?' is a Optional
 ### ClickhouseOrm
-`db` : string
-> Database name
+`db` : object<{name:string, engine?:string}>
+> name: database name
+
+> engine: database engine
 
 `debug` : boolean
 > Default: false
@@ -382,6 +388,8 @@ const list = [
   { status: 3, browser: 'IE', browser_v: '1.1.1' },
 ];
 
+Table1Model.insertMany(list)
+// or
 Table1Model.insertMany(
   list.map(item=>{
     const data = Table1Model.build();
@@ -393,8 +401,6 @@ Table1Model.insertMany(
     return data;
   })
 )
-// or
-Table1Model.insertMany(list)
 ```
 Final executed SQL:
 ```sql
