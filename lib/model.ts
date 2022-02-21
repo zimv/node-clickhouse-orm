@@ -97,11 +97,7 @@ export default class Model {
 
   create(obj: Object) {
     // new data model
-    const instance = this.build();
-
-    Object.keys(obj).forEach((i) => {
-      instance[i] = obj[i];
-    });
+    const instance = this.build(obj);
 
     // do save
     return instance.save();

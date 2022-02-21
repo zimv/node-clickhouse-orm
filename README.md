@@ -70,7 +70,7 @@ const table1Schema = {
 }
 ```
 
-**create / find：**
+**create/ build and save / find：**
 ```javascript
 const doDemo = async ()=>{
   // create database 'orm_test'
@@ -80,23 +80,33 @@ const doDemo = async ()=>{
   const Table1Model = await chOrm.model(table1Schema);
 
   // do create
-  Table1Model.create({
+  await Table1Model.create({
       status: 1,
       time: new Date(),
       browser: 'chrome',
       browser_v: '90.0.1.21'
-  }).then((res)=>{
-    // SQL: INSERT INTO orm_test.table1 (time,status,browser,browser_v) [{"time":"2022-02-05T07:51:16.919Z","status":1,"browser":"chrome","browser_v":"90.0.1.21"}]
-    console.log('create:', res);
-
-    // do find
-    Table1Model.find({
+  })
+    
+  // new data model
+  const data = Table1Model.build({status:2});
+    
+  // set value
+  data.time = new Date();
+  data.browser = 'chrome';
+  data.browser_v = '90.0.1.21';
+    
+  // do save
+  const res = await data.save()
+  // SQL: INSERT INTO orm_test.table1 (time,status,browser,browser_v) [{"time":"2022-02-05T07:51:16.919Z","status":2,"browser":"chrome","browser_v":"90.0.1.21"}]
+  console.log('save:', res);
+  
+  // do find
+  Table1Model.find({
       select: '*',
       limit: 3
-    }).then((res)=>{
+  }).then((res)=>{
       // SQL: SELECT * from orm_test.table1    LIMIT 3
       console.log('find:', res);
-    });
   });
 }
 
@@ -327,26 +337,36 @@ Final executed SQL:
 SELECT count() as browserTotal from (SELECT browser from orm_test.table1  GROUP BY browser  )
 ```
 
-### create
-```
+### save
+```javascript
 // new data model
 const data = Table1Model.build();
 
 // set value
-data.time = new Date();
+data.time = new _Date_();
 data.status = 1;
 data.browser = 'chrome';
 data.browser_v = '90.0.1.21';
 
-// do create 
-data.create({
+// do save 
+data.save().then((res)=>{
+  console.log('save:', res);
+});
+```
+Final executed SQL:
+```
+INSERT INTO orm_test.table1 (time,status,browser,browser_v) [{"time":"2022-02-05T07:51:16.919Z","status":1,"browser":"chrome","browser_v":"90.0.1.21"}]\
+```
+
+### create
+```javascript
+//do create
+await Table1Model.create({
     status: 1,
     time: new Date(),
     browser: 'chrome',
     browser_v: '90.0.1.21'
-}).then((res)=>{
-  console.log('crate:', res);
-});
+})
 ```
 Final executed SQL:
 ```

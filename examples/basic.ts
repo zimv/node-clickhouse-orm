@@ -56,22 +56,34 @@ const doDemo = async ()=>{
 
   console.log(chOrm.models);
 
-  // new data model
-  Table1Model.create({
-    status: 2,
+  // do create
+  await Table1Model.create({
+    status: 1,
     time: new Date(),
     browser: 'chrome',
     browser_v: '90.0.1.21'
-  }).then((res)=>{
-    console.log('create:', res);
+  })
 
-    // do find
-    Table1Model.find({
-      select: '*',
-      limit: 3,
-    }).then((res)=>{
-      console.log('find:', res);
-    });
+  //or
+
+  // new data model
+  const data = Table1Model.build({status:2});
+
+  // set value
+  data.time = new Date();
+  data.browser = 'chrome';
+  data.browser_v = '90.0.1.21';
+
+  // do save
+  const res = await data.save()
+  console.log('save:', res);
+
+  // do find
+  Table1Model.find({
+    select: '*',
+    limit: 3,
+  }).then((res)=>{
+    console.log('find:', res);
   });
 }
 
