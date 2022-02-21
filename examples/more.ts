@@ -170,7 +170,7 @@ const insertManyExample = ({
 
   return Model.insertMany(
     list.map(item=>{
-      const data = Model.create();
+      const data = Model.build();
       // set value
       data.time = new Date();
       data.status = item.status;

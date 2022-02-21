@@ -80,7 +80,7 @@ export default class Model {
     return this;
   }
 
-  create(initData?:Object) {
+  build(initData?:Object) {
     return new DataInstance(this, initData);
   }
 
@@ -95,7 +95,7 @@ export default class Model {
     return this.client.query(sql).toPromise();
   };
 
-  insert() {
+  create() {
 
   }
 

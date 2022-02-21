@@ -57,7 +57,7 @@ const doDemo = async ()=>{
   console.log(chOrm.models);
 
   // new data model
-  const data = Table1Model.create({status:2});
+  const data = Table1Model.build({status:2});
   
   // set value
   data.time = new Date();
