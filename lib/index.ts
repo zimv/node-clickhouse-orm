@@ -15,10 +15,14 @@ export const ClickhouseOrm = ({
   db,
   debug = false
 }: InitParams) => {
-  // 2.0版本，db 数据结构由 string 改成 object
-  // 升级版本有可能创建错误的 undefined 库，以此提示用户注意更新使用方式
+  if(!db) {
+    ErrorLog("db is undefined. It should be object that include required name and optional engine");
+
+    return;
+  }
+
   if (!db.name) {
-    ErrorLog("Database name is undefined. It should be string");
+    ErrorLog("db.name is undefined. db is object and db.name should be string");
 
     return;
   }
