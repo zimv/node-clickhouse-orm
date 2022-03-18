@@ -1,4 +1,4 @@
-import { DataInstance } from './model';
+import DataInstance from "./dataInstance";
 /**
  * Get a pure data instead of a model instance
  */
@@ -11,9 +11,8 @@ export const getPureData = (keys: string[], dataInstance: DataInstance) => {
 };
 
 export const insertSQL = (table: string, keys: string[]) => {
-  return `INSERT INTO ${table} (${keys.join(',')})`;
+  return `INSERT INTO ${table} (${keys.join(",")})`;
 };
-
 
 export interface SqlObject {
   select?: string;
@@ -25,23 +24,27 @@ export interface SqlObject {
 }
 // table: tableName or parentSql
 export const object2Sql = (table: string, qObj: SqlObject) => {
-  const {
-    select = '*',
-    where,
-    limit,
-    skip = 0,
-    orderBy,
-    groupBy
-  } = qObj;
-  let _limit = '', _orderBy = '', _groupBy = '';
-  if(limit){
-    _limit = `LIMIT ${skip ? `${skip},`: ''}${limit}`
-  } 
-  if(orderBy){
-    _orderBy = `ORDER BY ${orderBy}`
+  const { select = "*", where, limit, skip = 0, orderBy, groupBy } = qObj;
+  let _where = "",
+    _limit = "",
+    _orderBy = "",
+    _groupBy = "";
+
+  if (where) {
+    _where = ` where ${where}`;
   }
-  if(groupBy){
-    _groupBy = `GROUP BY ${groupBy}`
+
+  if (limit) {
+    _limit = ` LIMIT ${skip ? `${skip},` : ""}${limit}`;
   }
-  return `SELECT ${select} from ${table} ${where ? 'where ' + where : ''} ${_groupBy} ${_orderBy} ${_limit}`;
+
+  if (orderBy) {
+    _orderBy = ` ORDER BY ${orderBy}`;
+  }
+
+  if (groupBy) {
+    _groupBy = ` GROUP BY ${groupBy}`;
+  }
+
+  return `SELECT ${select} from ${table}${_where}${_groupBy}${_orderBy}${_limit}`;
 };
