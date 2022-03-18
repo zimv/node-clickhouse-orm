@@ -1,12 +1,13 @@
-import Orm from "../lib/orm";
+import { ClickhouseOrm, setLogService } from "../lib";
 
-import { initConfig, initSchema } from "..//mock/index";
+import { initConfig, initSchema } from "../mock/index";
 
 // integration test
 describe("test whole flow", () => {
   let orm;
   beforeEach(() => {
-    orm = new Orm(initConfig);
+    setLogService(console.warn);
+    orm = ClickhouseOrm(initConfig);
   });
   test("insert data and find success", async () => {
     const model = await orm.model(initSchema);
@@ -44,5 +45,14 @@ describe("test whole flow", () => {
     const res = await model.find({ select: "*", limit: 2 });
 
     expect(res.length).toBeLessThanOrEqual(2);
+  });
+
+  test("validate db config", async () => {
+    const config1 = {...initConfig, db: {...initConfig.db}};
+    const config2 = {...initConfig, db: {...initConfig.db}};
+    delete config1.db.name;
+    delete config2.db;
+    expect(ClickhouseOrm(config1)).toBeUndefined();
+    expect(ClickhouseOrm(config2)).toBeUndefined();
   });
 });
