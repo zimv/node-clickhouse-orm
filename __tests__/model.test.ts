@@ -63,9 +63,9 @@ describe("model can work normal", () => {
       schema: initSchema.schema,
     });
 
-    const res = await model.find({ select: "*" });
+    await model.find({ select: "*" });
 
-    expect(res.length).toBeGreaterThanOrEqual(0);
+    expect(LogMock).toHaveBeenCalledTimes(1);
   });
 
   test("it can insert many data", async () => {
