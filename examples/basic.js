@@ -29,7 +29,7 @@ const table1Schema = {
 }
 
 /**
- * new Orm
+ * new instance
  */
 const db = {
   name: 'orm_test'

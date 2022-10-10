@@ -1,15 +1,15 @@
-import { ClickHouse } from "clickhouse";
+import { ModelRigisterParams, InitParams } from "../lib";
 import { DATA_TYPE } from "../lib/constants";
 
-export const initConfig = {
-  client: new ClickHouse({
+export const initConfig: InitParams = {
+  client: {
     url: "localhost",
     port: "8123",
     basicAuth: {
       username: "default",
       password: "",
     },
-  }),
+  },
   db: {
     name: "orm_test",
     engine: "Atomic",
@@ -17,7 +17,7 @@ export const initConfig = {
   debug: true,
 };
 
-export const initSchema = {
+export const initSchema: ModelRigisterParams = {
   tableName: "test",
   schema: {
     time: { type: DATA_TYPE.DateTime, default: Date },

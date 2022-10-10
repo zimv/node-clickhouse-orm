@@ -22,20 +22,21 @@
     "ts-basic": "ts-node ./examples/basic.ts",
     "node-basic": "node ./examples/basic",
     "ts-more": "ts-node ./examples/more.ts",
+    "ts-cluster": "ts-node ./examples/cluster.ts",
     "test": "jest --coverage"
   },
   "dependencies": {
-    "clickhouse": "^2.4.0",
+    "clickhouse": "^2.6.0",
     "colors": "^1.4.0"
   },
   "devDependencies": {
     "@types/jest": "^27.4.1",
     "dayjs": "^1.10.7",
     "jest": "^27.4.1",
+    "jest-mock": "^27.5.1",
     "ts-jest": "^27.1.3",
     "ts-node": "^10.4.0",
-    "typescript": "^4.3.5",
-    "jest-mock": "^27.5.1"
+    "typescript": "^4.3.5"
   },
   "main": "dist/lib/index.js",
   "types": "dist/lib/index.d.ts"

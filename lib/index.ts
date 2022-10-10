@@ -1,8 +1,9 @@
 import { ClickHouse } from 'clickhouse';
 import Orm, { DbParams } from './orm';
+import { ErrorLog } from "./log";
 export { setLogService } from './log';// Singleton Pattern
 export { DATA_TYPE } from './constants';
-import { ErrorLog } from "./log";
+export * from './orm';
 
 export interface InitParams {
   client: Object;// TimonKK/clickhouse config

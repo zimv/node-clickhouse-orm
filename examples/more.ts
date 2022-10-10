@@ -29,7 +29,7 @@ const table1Schema = {
 }
 
 /**
- * new Orm
+ * new instance
  */
 const db = {
   name: 'orm_test'
@@ -56,7 +56,6 @@ const doDemo = async ()=>{
 
   // register schema and create [if] table
   const Table1Model = await chOrm.model(table1Schema);
-
 
   // chOrm.client: TimonKK/ClickHouse instance
   await chOrm.client.query(`select * from orm_test.table1 limit 3`).toPromise().then(res=>{
