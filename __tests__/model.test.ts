@@ -1,3 +1,5 @@
+
+import { ClickHouse } from "clickhouse";
 import Model from "../lib/model";
 import Schema from "../lib/schema";
 import DataInstance from "../lib/dataInstance";
@@ -28,7 +30,7 @@ describe("model can work normal", () => {
   test("We can check if the model called the class constructor", () => {
     expect(SchemaMock).not.toHaveBeenCalled();
     const model = new Model({
-      client: initConfig.client,
+      client: new ClickHouse(initConfig.client),
       dbTableName: `${initConfig.db.name}.${initSchema.tableName}`,
       debug: initConfig.debug,
       schema: initSchema.schema,
@@ -44,7 +46,7 @@ describe("model can work normal", () => {
 
   test("it should create a data normal", async () => {
     const model = new Model({
-      client: initConfig.client,
+      client: new ClickHouse(initConfig.client),
       dbTableName: `${initConfig.db.name}.${initSchema.tableName}`,
       debug: initConfig.debug,
       schema: initSchema.schema,
@@ -57,7 +59,7 @@ describe("model can work normal", () => {
 
   test("it can find data", async () => {
     const model = new Model({
-      client: initConfig.client,
+      client: new ClickHouse(initConfig.client),
       dbTableName: `${initConfig.db.name}.${initSchema.tableName}`,
       debug: initConfig.debug,
       schema: initSchema.schema,
@@ -70,7 +72,7 @@ describe("model can work normal", () => {
 
   test("it can insert many data", async () => {
     const model = new Model({
-      client: initConfig.client,
+      client: new ClickHouse(initConfig.client),
       dbTableName: `${initConfig.db.name}.${initSchema.tableName}`,
       debug: initConfig.debug,
       schema: initSchema.schema,

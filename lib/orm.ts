@@ -3,9 +3,13 @@ import Model from "./model";
 import { SchemaTable } from "./schema";
 import { Log, DebugLog } from "./log";
 
+/**
+ * name:string
+ */
 export interface DbParams {
   name: string;
   engine?: string; // default: Atomic
+  cluster?: string;
 }
 export interface OrmInitParams {
   client: ClickHouse;
@@ -13,10 +17,10 @@ export interface OrmInitParams {
   debug: boolean;
 }
 
-export interface RigisterParams {
+export interface ModelRigisterParams {
   tableName: string;
   schema: SchemaTable;
-  createTable: (dbTableName: string) => string;
+  createTable: (dbTableName: string, db: DbParams) => string;
 }
 
 export default class ClickhouseOrm {
@@ -30,12 +34,18 @@ export default class ClickhouseOrm {
     this.db = db;
     this.debug = debug;
   }
-  createDatabase() {
-    const { name, engine } = this.db;
-    const createDatabaseSql = `CREATE DATABASE IF NOT EXISTS ${name} ${
-      engine ? `ENGINE=${engine}` : ""
-    }`;
+
+  getCreateDatabaseSql() {
+    const { name, engine, cluster } = this.db;
+    const createDatabaseSql = `CREATE DATABASE IF NOT EXISTS ${name}${
+      cluster ? ` ON CLUSTER ${cluster}` : ""
+    }${engine ? ` ENGINE=${engine}` : ""}`;
     Log(createDatabaseSql);
+    return createDatabaseSql;
+  }
+
+  createDatabase() {
+    const createDatabaseSql = this.getCreateDatabaseSql();
     return this.client.query(createDatabaseSql).toPromise();
   }
 
@@ -43,10 +53,10 @@ export default class ClickhouseOrm {
    * @remark
    * The createDatabase must be completed
    */
-  async model({ tableName, schema, createTable }: RigisterParams) {
+  async model({ tableName, schema, createTable }: ModelRigisterParams) {
     const dbTableName = `${this.db.name}.${tableName}`;
     // create table
-    const createSql = createTable(dbTableName);
+    const createSql = createTable(dbTableName, this.db);
     if (this.debug) DebugLog(`execute model> ${createSql}`);
     await this.client.query(createSql).toPromise();
 
