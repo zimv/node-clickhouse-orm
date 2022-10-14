@@ -7,6 +7,8 @@
 
 # clickhouse-orm
 
+[![Join the chat at https://gitter.im/zimv/node-clickhouse-orm](https://badges.gitter.im/zimv/node-clickhouse-orm.svg)](https://gitter.im/zimv/node-clickhouse-orm?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Clickhouse ORM for Nodejs. Send query over HTTP interface. Using [TimonKK/clickhouse](https://github.com/TimonKK/clickhouse).
 
 # Install:
