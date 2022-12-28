@@ -31,7 +31,7 @@ export const object2Sql = (table: string, qObj: SqlObject) => {
     _groupBy = "";
 
   if (where) {
-    _where = ` where ${where}`;
+    _where = ` WHERE ${where}`;
   }
 
   if (limit) {
@@ -47,4 +47,26 @@ export const object2Sql = (table: string, qObj: SqlObject) => {
   }
 
   return `SELECT ${select} from ${table}${_where}${_groupBy}${_orderBy}${_limit}`;
+};
+
+export interface DeleteSqlObject {
+  where: string;
+}
+// table: tableName or parentSql
+export const deleteObject2Sql = (
+  table: string,
+  qObj: DeleteSqlObject & {
+    cluster?: string;
+  }
+) => {
+  const { where, cluster } = qObj;
+  let _where = "";
+
+  if (where) {
+    _where = ` WHERE ${where}`;
+  }
+
+  return `ALTER TABLE ${table} ${
+    cluster ? ` ON CLUSTER ${cluster}` : ""
+  } DELETE ${_where}`;
 };

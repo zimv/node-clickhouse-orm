@@ -33,6 +33,7 @@ describe("model can work normal", () => {
       client: new ClickHouse(initConfig.client),
       dbTableName: `${initConfig.db.name}.${initSchema.tableName}`,
       debug: initConfig.debug,
+      db: initConfig.db,
       schema: initSchema.schema,
     });
 
@@ -49,6 +50,7 @@ describe("model can work normal", () => {
       client: new ClickHouse(initConfig.client),
       dbTableName: `${initConfig.db.name}.${initSchema.tableName}`,
       debug: initConfig.debug,
+      db: initConfig.db,
       schema: initSchema.schema,
     });
 
@@ -62,6 +64,7 @@ describe("model can work normal", () => {
       client: new ClickHouse(initConfig.client),
       dbTableName: `${initConfig.db.name}.${initSchema.tableName}`,
       debug: initConfig.debug,
+      db: initConfig.db,
       schema: initSchema.schema,
     });
 
@@ -75,6 +78,7 @@ describe("model can work normal", () => {
       client: new ClickHouse(initConfig.client),
       dbTableName: `${initConfig.db.name}.${initSchema.tableName}`,
       debug: initConfig.debug,
+      db: initConfig.db,
       schema: initSchema.schema,
     });
     model["schemaInstance"]["columns"] = ["status"];

@@ -429,6 +429,21 @@ Final executed SQL:
 INSERT INTO orm_test.table1 (time,status,browser,browser_v) [{"time":"2022-02-05T07:34:22.226Z","status":2,"browser":"IE","browser_v":"10.0.1.21"},{"time":"2022-02-05T07:34:22.226Z","status":2,"browser":"FF","browser_v":"2.0.3"},{"time":"2022-02-05T07:34:22.226Z","status":3,"browser":"IE","browser_v":"1.1.1"}]
 ```
 
+### delete
+
+```javascript
+
+Table1Model.delete({
+  where: `browser='Chrome'`,
+})
+```
+
+Final executed SQL:
+
+```sql
+ALTER TABLE orm_test.table1  DELETE  WHERE browser='Chrome'
+```
+
 ## cluster
 
 **Create a cluster instance：**
