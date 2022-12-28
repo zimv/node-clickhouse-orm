@@ -62,6 +62,7 @@ export default class ClickhouseOrm {
 
     const modelInstance = new Model({
       client: this.client,
+      db: this.db,
       dbTableName,
       debug: this.debug,
       schema,

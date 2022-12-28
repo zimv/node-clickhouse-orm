@@ -1,7 +1,15 @@
 import { ClickHouse } from "clickhouse";
-import { getPureData, insertSQL, object2Sql, SqlObject } from "./transformer";
+import {
+  getPureData,
+  insertSQL,
+  object2Sql,
+  SqlObject,
+  deleteObject2Sql,
+  DeleteSqlObject,
+} from "./transformer";
 import Schema, { SchemaTable } from "./schema";
 import { DebugLog } from "./log";
+import { DbParams } from "./orm";
 import DataInstance from "./dataInstance";
 
 export interface ModelOptions {
@@ -9,22 +17,33 @@ export interface ModelOptions {
   dbTableName: string;
   debug: boolean;
   schema: SchemaTable;
+  db: DbParams;
 }
 
 export default class Model {
   client;
   dbTableName;
   debug;
+  db;
   schemaInstance: Schema;
 
-  constructor({ client, dbTableName, debug, schema }: ModelOptions) {
+  constructor({ client, dbTableName, debug, schema, db }: ModelOptions) {
     this.client = client;
+    this.db = db;
     this.dbTableName = dbTableName;
     this.debug = debug;
 
     this.schemaInstance = new Schema(schema);
 
     return this;
+  }
+
+  create(obj: Object) {
+    // new data model
+    const instance = this.build(obj);
+
+    // do save
+    return instance.save();
   }
 
   build(initData?: Object) {
@@ -42,12 +61,13 @@ export default class Model {
     return this.client.query(sql).toPromise();
   }
 
-  create(obj: Object) {
-    // new data model
-    const instance = this.build(obj);
-
-    // do save
-    return instance.save();
+  delete(deleteObject: DeleteSqlObject): Promise<any> {
+    let sql = deleteObject2Sql(this.dbTableName, {
+      ...deleteObject,
+      cluster: this.db.cluster,
+    });
+    if (this.debug) DebugLog(`[>>EXECUTE FIND<<] ${sql}`);
+    return this.client.query(sql).toPromise();
   }
 
   insertMany(dataArray: Array<Object> | Array<DataInstance>): Promise<any> {

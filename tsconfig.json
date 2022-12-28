@@ -18,5 +18,8 @@
       "@App/*": ["./src/app/*"],
       "@Modules/*": ["./src/modules/*"]
     }
-  }
+  },
+  "exclude": [
+    "__tests__",
+  ]
 }
