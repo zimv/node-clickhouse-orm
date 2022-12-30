@@ -49,6 +49,9 @@ export const object2Sql = (table: string, qObj: SqlObject) => {
   return `SELECT ${select} from ${table}${_where}${_groupBy}${_orderBy}${_limit}`;
 };
 
+export const getClusterStr = (cluster: string) => {
+  return cluster ? `ON CLUSTER ${cluster}` : ""
+}
 export interface DeleteSqlObject {
   where: string;
 }
@@ -66,7 +69,6 @@ export const deleteObject2Sql = (
     _where = ` WHERE ${where}`;
   }
 
-  return `ALTER TABLE ${table} ${
-    cluster ? ` ON CLUSTER ${cluster}` : ""
-  } DELETE ${_where}`;
+  return `ALTER TABLE ${table} ${getClusterStr(cluster)} DELETE ${_where}`;
 };
+

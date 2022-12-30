@@ -7,16 +7,17 @@ const table1Schema = {
   tableName: "full_datatype_table",
   schema: {
     time: { type: DATA_TYPE.DateTime, default: Date },
-    status: { type: DATA_TYPE.Int32 },
+    status: { type: DATA_TYPE.Int64 },
     browser: { type: DATA_TYPE.String },
     browser_v: { type: DATA_TYPE.String },
     fixedString: { type: DATA_TYPE.FixedString(3) },
-    lowCardinality: { type: DATA_TYPE.LowCardinality(DATA_TYPE.FixedString(4)) },
+    add2: { type: DATA_TYPE.String },
   },
   options: `ENGINE = MergeTree
   PARTITION BY toYYYYMM(time)
   ORDER BY time`,
   autoSync: true,
+  autoCreate: true,
 };
 
 /**
