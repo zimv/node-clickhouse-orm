@@ -23,6 +23,7 @@
     "node-basic": "node ./examples/basic",
     "ts-more": "ts-node ./examples/more.ts",
     "ts-cluster": "ts-node ./examples/cluster.ts",
+    "ts-full": "ts-node ./examples/full-datatype.ts",
     "test": "jest --coverage"
   },
   "dependencies": {

@@ -10,8 +10,9 @@ const table1Schema = {
     time: { type: DATA_TYPE.DateTime, default: Date },
     status: { type: DATA_TYPE.Int32 },
     browser: { type: DATA_TYPE.String },
-    browser_v: {},
+    browser_v: { type: DATA_TYPE.String },
   },
+  autoSync: true,
   createTable: (dbTableName) => {
     // dbTableName = db + '.' + tableName = (orm_test.table1)
     return `

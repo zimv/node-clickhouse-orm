@@ -4,12 +4,14 @@ import { ClickhouseOrm, DATA_TYPE, setLogService } from "../lib/index";
  * defined Schema
  */
 const table1Schema = {
-  tableName: "table1",
+  tableName: "full_datatype_table",
   schema: {
     time: { type: DATA_TYPE.DateTime, default: Date },
     status: { type: DATA_TYPE.Int32 },
     browser: { type: DATA_TYPE.String },
     browser_v: { type: DATA_TYPE.String },
+    fixedString: { type: DATA_TYPE.FixedString(3) },
+    lowCardinality: { type: DATA_TYPE.LowCardinality(DATA_TYPE.FixedString(4)) },
   },
   options: `ENGINE = MergeTree
   PARTITION BY toYYYYMM(time)
@@ -47,29 +49,15 @@ const doDemo = async () => {
   // register schema and create [if] table
   const Table1Model = await chOrm.model(table1Schema);
 
-  console.log(chOrm.models);
-
   // do create
   await Table1Model.create({
     status: 1,
     time: new Date(),
     browser: "chrome",
     browser_v: "90.0.1.21",
+    fixedString: '12',
+    lowCardinality: 'test'
   });
-
-  //or
-
-  // new data model
-  const data = Table1Model.build({ status: 2 });
-
-  // set value
-  data.time = new Date();
-  data.browser = "chrome";
-  data.browser_v = "90.0.1.21";
-
-  // do save
-  const res = await data.save();
-  console.log("save:", res);
 
   // do find
   Table1Model.find({

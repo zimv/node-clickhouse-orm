@@ -20,7 +20,13 @@ export interface OrmInitParams {
 export interface ModelRigisterParams {
   tableName: string;
   schema: SchemaTable;
-  createTable: (dbTableName: string, db: DbParams) => string;
+}
+export interface ModelRigisterAndCreateTableParams {
+  tableName: string;
+  schema: SchemaTable;
+  createTable?: (dbTableName: string, db: DbParams) => string;
+  options?: string;
+  autoSync: boolean;
 }
 
 export default class ClickhouseOrm {
@@ -49,16 +55,49 @@ export default class ClickhouseOrm {
     return this.client.query(createDatabaseSql).toPromise();
   }
 
+  // auto create sql string
+  autoCreateTable(
+    dbTableName: string,
+    schemaConfig: ModelRigisterAndCreateTableParams
+  ) {
+    if (!schemaConfig.options)
+      throw Error("autoCreateTable: `options` is required");
+
+    const {schema, options} = schemaConfig;
+    return `
+      CREATE TABLE IF NOT EXISTS ${dbTableName} ${
+      this.db.cluster ? `ON CLUSTER ${this.db.cluster}` : ""
+    }
+      (
+        ${Object.keys(schema).map(key=>{
+          return `${key} ${schema[key].type.columnType}`
+        }).join(",")}
+      )
+      ${options}`;
+  }
+
   /**
    * @remark
    * The createDatabase must be completed
    */
-  async model({ tableName, schema, createTable }: ModelRigisterParams) {
+  async model(
+    schemaConfig: ModelRigisterParams | ModelRigisterAndCreateTableParams
+  ) {
+    const { tableName, schema } = schemaConfig;
     const dbTableName = `${this.db.name}.${tableName}`;
-    // create table
-    const createSql = createTable(dbTableName, this.db);
-    if (this.debug) DebugLog(`execute model> ${createSql}`);
-    await this.client.query(createSql).toPromise();
+
+    if ((schemaConfig as ModelRigisterAndCreateTableParams).autoSync) {
+      // create table [IF NOT EXISTS]
+      const { createTable } = schemaConfig as ModelRigisterAndCreateTableParams;
+      const createSql = createTable
+        ? createTable(dbTableName, this.db)
+        : this.autoCreateTable(
+            dbTableName,
+            schemaConfig as ModelRigisterAndCreateTableParams
+          );
+      if (this.debug) DebugLog(`execute model> ${createSql}`);
+      await this.client.query(createSql).toPromise();
+    }
 
     const modelInstance = new Model({
       client: this.client,

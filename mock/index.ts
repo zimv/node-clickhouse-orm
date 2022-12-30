@@ -1,5 +1,5 @@
-import { ModelRigisterParams, InitParams } from "../lib";
-import { DATA_TYPE } from "../lib/constants";
+import { ModelRigisterAndCreateTableParams, InitParams } from "../lib";
+import { DATA_TYPE } from "../lib/data-type";
 
 export const initConfig: InitParams = {
   client: {
@@ -17,14 +17,15 @@ export const initConfig: InitParams = {
   debug: true,
 };
 
-export const initSchema: ModelRigisterParams = {
+export const initSchema: ModelRigisterAndCreateTableParams = {
   tableName: "test",
   schema: {
     time: { type: DATA_TYPE.DateTime, default: Date },
     status: { type: DATA_TYPE.Int32 },
     browser: { type: DATA_TYPE.String },
-    browser_v: {},
+    browser_v: { type: DATA_TYPE.String },
   },
+  autoSync: true,
   createTable: (dbTableName) => {
     return `
           CREATE TABLE IF NOT EXISTS ${dbTableName}
