@@ -1,7 +1,7 @@
 import { ClickHouse } from "clickhouse";
 import Model from "./model";
 import { SchemaTable } from "./schema";
-import { getClusterStr } from "./transformer";
+import { getClusterStr, getDatabaseEngineStr } from "./transformer";
 import { Log, DebugLog, ErrorLog } from "./log";
 
 /**
@@ -18,17 +18,21 @@ export interface OrmInitParams {
   debug: boolean;
 }
 
-export interface ModelRigisterParams {
+export interface ModelParams {
   tableName: string;
   schema: SchemaTable;
 }
-export interface ModelRigisterAndCreateTableParams {
+export interface ModelSyncTableParams {
+  tableName: string;
+  schema: SchemaTable;
+  autoCreate: boolean;
+  options?: string;
+  autoSync?: boolean;
+}
+export interface ModelSqlCreateTableParams {
   tableName: string;
   schema: SchemaTable;
   createTable?: (dbTableName: string, db: DbParams) => string;
-  options?: string;
-  autoCreate: boolean;
-  autoSync?: boolean;
 }
 
 type TableMeta = { name: string; type: string }[];
@@ -48,7 +52,7 @@ export default class ClickhouseOrm {
     const { name, engine, cluster } = this.db;
     const createDatabaseSql = `CREATE DATABASE IF NOT EXISTS ${name} ${getClusterStr(
       cluster
-    )} ${engine ? ` ENGINE=${engine}` : ""}`;
+    )} ${getDatabaseEngineStr(engine)}`;
     Log(createDatabaseSql);
     return createDatabaseSql;
   }
@@ -131,14 +135,11 @@ export default class ClickhouseOrm {
   }
 
   // auto create sql string
-  autoCreateTable(
-    dbTableName: string,
-    schemaConfig: ModelRigisterAndCreateTableParams
-  ) {
-    if (!schemaConfig.options)
-      throw Error("autoCreateTable: `options` is required");
+  autoCreateTableSql(dbTableName: string, modelConfig: ModelSyncTableParams) {
+    if (!modelConfig.options)
+      throw Error("autoCreate or autoSync: `options` is required");
 
-    const { schema, options } = schemaConfig;
+    const { schema, options } = modelConfig;
     return `
       CREATE TABLE IF NOT EXISTS ${dbTableName} ${getClusterStr(
       this.db.cluster
@@ -153,54 +154,50 @@ export default class ClickhouseOrm {
       ${options}`;
   }
 
-  async createAndSync(schemaConfig, dbTableName) {
-    if (
-      (schemaConfig as ModelRigisterAndCreateTableParams).autoSync ||
-      (schemaConfig as ModelRigisterAndCreateTableParams).autoCreate
-    ) {
-      const tablemeta = await this.getTableMeta(dbTableName);
-      if (tablemeta) {
-        if (schemaConfig.autoSync) {
-          const diff = this.diffTableMeta(schemaConfig.schema, tablemeta);
-          if (
-            diff.addColumns.length ||
-            diff.deleteColumns.length ||
-            diff.modifyColumns.length
-          ) {
-            try {
-              const syncSqlRes = await this.syncTable({
-                ...diff,
-                dbTableName,
-              } as any);
-              if (syncSqlRes.length)
-                Log(`Sync table '${dbTableName}' structure complete!`);
-            } catch (e) {
-              const info = `Sync table '${dbTableName}' structure failed and Model create failed:\n ${e}`;
-              ErrorLog(info);
-              throw new Error(info);
-            }
-          }
-        }
-      } else {
-        if (schemaConfig.autoCreate) {
-          // [IF NOT EXISTS] create table
-          const { createTable } =
-            schemaConfig as ModelRigisterAndCreateTableParams;
-          const createSql = createTable
-            ? createTable(dbTableName, this.db)
-            : this.autoCreateTable(
-                dbTableName,
-                schemaConfig as ModelRigisterAndCreateTableParams
-              );
-          Log(`Create table> ${createSql}`);
+  async createAndSync(
+    modelConfig: ModelSyncTableParams | ModelSqlCreateTableParams,
+    dbTableName: string
+  ) {
+    const tablemeta = await this.getTableMeta(dbTableName);
+    // Table Exists
+    if (tablemeta) {
+      if ((modelConfig as ModelSyncTableParams).autoSync) {
+        const diff = this.diffTableMeta(modelConfig.schema, tablemeta);
+        if (
+          diff.addColumns.length ||
+          diff.deleteColumns.length ||
+          diff.modifyColumns.length
+        ) {
           try {
-            await this.client.query(createSql).toPromise();
+            const syncSqlRes = await this.syncTable({
+              ...diff,
+              dbTableName,
+            } as any);
+            if (syncSqlRes.length)
+              Log(`Sync table '${dbTableName}' structure complete!`);
           } catch (e) {
-            const info = `Create table '${dbTableName}' failed and Model create failed:\n ${e}`;
+            const info = `Sync table '${dbTableName}' structure failed and Model create failed:\n ${e}`;
             ErrorLog(info);
             throw new Error(info);
           }
         }
+      }
+    } else {
+      // [IF NOT EXISTS] create table
+      const { createTable } = modelConfig as ModelSqlCreateTableParams;
+      const createSql = createTable
+        ? createTable(dbTableName, this.db)
+        : this.autoCreateTableSql(
+            dbTableName,
+            modelConfig as ModelSyncTableParams
+          );
+      Log(`Create table> ${createSql}`);
+      try {
+        await this.client.query(createSql).toPromise();
+      } catch (e) {
+        const info = `Create table '${dbTableName}' failed and Model create failed:\n ${e}`;
+        ErrorLog(info);
+        throw new Error(info);
       }
     }
   }
@@ -210,12 +207,16 @@ export default class ClickhouseOrm {
    * The createDatabase must be completed
    */
   async model(
-    schemaConfig: ModelRigisterParams | ModelRigisterAndCreateTableParams
+    modelConfig: ModelParams | ModelSyncTableParams | ModelSqlCreateTableParams
   ) {
-    const { tableName, schema } = schemaConfig;
+    const { tableName, schema } = modelConfig;
     const dbTableName = `${this.db.name}.${tableName}`;
 
-    await this.createAndSync(schemaConfig, dbTableName);
+    if (
+      (modelConfig as ModelSyncTableParams).autoCreate ||
+      (modelConfig as ModelSqlCreateTableParams).createTable
+    )
+      await this.createAndSync(modelConfig, dbTableName);
 
     const modelInstance = new Model({
       client: this.client,

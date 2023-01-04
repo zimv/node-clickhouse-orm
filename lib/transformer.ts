@@ -50,8 +50,11 @@ export const object2Sql = (table: string, qObj: SqlObject) => {
 };
 
 export const getClusterStr = (cluster: string) => {
-  return cluster ? `ON CLUSTER ${cluster}` : ""
-}
+  return cluster ? `ON CLUSTER ${cluster}` : "";
+};
+export const getDatabaseEngineStr = (engine: string) => {
+  return engine ? `ENGINE=${engine}` : "";
+};
 export interface DeleteSqlObject {
   where: string;
 }
@@ -71,4 +74,3 @@ export const deleteObject2Sql = (
 
   return `ALTER TABLE ${table} ${getClusterStr(cluster)} DELETE ${_where}`;
 };
-

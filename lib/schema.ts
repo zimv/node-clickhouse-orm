@@ -1,7 +1,7 @@
 import { DATA_TYPE_DEFINE, FunctionValidation } from "./data-type";
 import DataInstance from "./dataInstance";
 import { isObject, isObjectDate } from "./utils";
-import { ErrorLog, Log } from "./log";
+import { ErrorLog } from "./log";
 
 export interface SchemaTable {
   [key: string]: SchemaObj;
