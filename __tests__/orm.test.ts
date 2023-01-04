@@ -1,6 +1,7 @@
 import { ClickhouseOrm } from "../lib";
+import Model from "../lib/model";
 import * as Log from "../lib/log";
-import { initConfig, initSchema } from "../mock/index";
+import { initConfig, modelSqlCreateTableParams } from "../mock/index";
 
 jest.mock("../lib/log");
 
@@ -22,9 +23,9 @@ describe("Orm can work normal", () => {
   });
 
   test("create model success", async () => {
-    await orm.model(initSchema);
+    const model = await orm.model(modelSqlCreateTableParams);
 
-    expect(Log.DebugLog).toHaveBeenCalledTimes(1);
+    expect(model).toBeInstanceOf(Model);
   });
 });
 

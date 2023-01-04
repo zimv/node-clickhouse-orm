@@ -1,4 +1,8 @@
-import { ModelRigisterAndCreateTableParams, InitParams } from "../lib";
+import {
+  InitParams,
+  ModelSqlCreateTableParams,
+  ModelSyncTableParams,
+} from "../lib";
 import { DATA_TYPE } from "../lib/data-type";
 
 export const initConfig: InitParams = {
@@ -17,7 +21,7 @@ export const initConfig: InitParams = {
   debug: true,
 };
 
-export const initSchema: ModelRigisterAndCreateTableParams = {
+export const modelSqlCreateTableParams: ModelSqlCreateTableParams = {
   tableName: "test",
   schema: {
     time: { type: DATA_TYPE.DateTime, default: Date },
@@ -25,7 +29,6 @@ export const initSchema: ModelRigisterAndCreateTableParams = {
     browser: { type: DATA_TYPE.String },
     browser_v: { type: DATA_TYPE.String },
   },
-  autoSync: true,
   createTable: (dbTableName) => {
     return `
           CREATE TABLE IF NOT EXISTS ${dbTableName}
@@ -39,4 +42,32 @@ export const initSchema: ModelRigisterAndCreateTableParams = {
           PARTITION BY toYYYYMM(time)
           ORDER BY time`;
   },
+};
+
+export const modelSyncTableParams1: ModelSyncTableParams = {
+  tableName: "testsync",
+  schema: {
+    time: { type: DATA_TYPE.DateTime, default: Date },
+    will_typeChanged: { type: DATA_TYPE.Int16 },
+    will_deleted: { type: DATA_TYPE.String },
+  },
+  options: `ENGINE = MergeTree
+  PARTITION BY toYYYYMM(time)
+  ORDER BY time`,
+  autoCreate: true,
+  autoSync: true,
+};
+
+export const modelSyncTableParams2: ModelSyncTableParams = {
+  tableName: "testsync",
+  schema: {
+    time: { type: DATA_TYPE.DateTime, default: Date },
+    will_typeChanged: { type: DATA_TYPE.Int32 },
+    add_column: { type: DATA_TYPE.String },
+  },
+  options: `ENGINE = MergeTree
+  PARTITION BY toYYYYMM(time)
+  ORDER BY time`,
+  autoCreate: true,
+  autoSync: true,
 };

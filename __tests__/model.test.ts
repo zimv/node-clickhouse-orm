@@ -5,7 +5,7 @@ import Schema from "../lib/schema";
 import DataInstance from "../lib/dataInstance";
 import * as Log from "../lib/log";
 
-import { initConfig, initSchema } from "..//mock/index";
+import { initConfig, modelSqlCreateTableParams } from "..//mock/index";
 import { mocked } from "jest-mock";
 
 jest.mock("../lib/schema");
@@ -31,10 +31,10 @@ describe("model can work normal", () => {
     expect(SchemaMock).not.toHaveBeenCalled();
     const model = new Model({
       client: new ClickHouse(initConfig.client),
-      dbTableName: `${initConfig.db.name}.${initSchema.tableName}`,
+      dbTableName: `${initConfig.db.name}.${modelSqlCreateTableParams.tableName}`,
       debug: initConfig.debug,
       db: initConfig.db,
-      schema: initSchema.schema,
+      schema: modelSqlCreateTableParams.schema,
     });
 
     expect(SchemaMock).toHaveBeenCalledTimes(1);
@@ -48,10 +48,10 @@ describe("model can work normal", () => {
   test("it should create a data normal", async () => {
     const model = new Model({
       client: new ClickHouse(initConfig.client),
-      dbTableName: `${initConfig.db.name}.${initSchema.tableName}`,
+      dbTableName: `${initConfig.db.name}.${modelSqlCreateTableParams.tableName}`,
       debug: initConfig.debug,
       db: initConfig.db,
-      schema: initSchema.schema,
+      schema: modelSqlCreateTableParams.schema,
     });
 
     model.create({ status: 3 });
@@ -62,10 +62,10 @@ describe("model can work normal", () => {
   test("it can find data", async () => {
     const model = new Model({
       client: new ClickHouse(initConfig.client),
-      dbTableName: `${initConfig.db.name}.${initSchema.tableName}`,
+      dbTableName: `${initConfig.db.name}.${modelSqlCreateTableParams.tableName}`,
       debug: initConfig.debug,
       db: initConfig.db,
-      schema: initSchema.schema,
+      schema: modelSqlCreateTableParams.schema,
     });
 
     await model.find({ select: "*" });
@@ -76,10 +76,10 @@ describe("model can work normal", () => {
   test("it can insert many data", async () => {
     const model = new Model({
       client: new ClickHouse(initConfig.client),
-      dbTableName: `${initConfig.db.name}.${initSchema.tableName}`,
+      dbTableName: `${initConfig.db.name}.${modelSqlCreateTableParams.tableName}`,
       debug: initConfig.debug,
       db: initConfig.db,
-      schema: initSchema.schema,
+      schema: modelSqlCreateTableParams.schema,
     });
     model["schemaInstance"]["columns"] = ["status"];
 

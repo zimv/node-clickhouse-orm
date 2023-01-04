@@ -58,6 +58,6 @@ test("deleteObject2Sql custer", () => {
   const table = "car";
 
   expect(deleteObject2Sql(table, condition)).toBe(
-    "ALTER TABLE car  ON CLUSTER cluster1 DELETE  WHERE browser='Chrome'"
+    "ALTER TABLE car ON CLUSTER cluster1 DELETE  WHERE browser='Chrome'"
   );
 });
