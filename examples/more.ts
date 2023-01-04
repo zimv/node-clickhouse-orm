@@ -1,10 +1,10 @@
 import * as dayjs from "dayjs";
-import { ClickhouseOrm, DATA_TYPE, setLogService } from "../lib/index";
+import { ClickhouseOrm, DATA_TYPE, ModelSqlCreateTableParams } from "../lib/index";
 
 /**
  * defined Schema
  */
-const table1Schema = {
+const table1Schema: ModelSqlCreateTableParams = {
   tableName: "table1",
   schema: {
     time: { type: DATA_TYPE.DateTime, default: Date },
@@ -12,7 +12,6 @@ const table1Schema = {
     browser: { type: DATA_TYPE.String },
     browser_v: { type: DATA_TYPE.String },
   },
-  autoSync: true,
   createTable: (dbTableName) => {
     // dbTableName = db + '.' + tableName = (orm_test.table1)
     return `

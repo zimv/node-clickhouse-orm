@@ -1,9 +1,9 @@
-import { ClickhouseOrm, DATA_TYPE, setLogService } from "../lib/index";
+import { ClickhouseOrm, DATA_TYPE, ModelSyncTableParams } from "../lib/index";
 
 /**
  * defined Schema
  */
-const table1Schema = {
+const table1Schema: ModelSyncTableParams = {
   tableName: "table1",
   schema: {
     time: { type: DATA_TYPE.DateTime, default: Date },
@@ -11,6 +11,7 @@ const table1Schema = {
     browser: { type: DATA_TYPE.String },
     browser_v: { type: DATA_TYPE.String },
   },
+  autoCreate: true,
   options: `ENGINE = MergeTree
   PARTITION BY toYYYYMM(time)
   ORDER BY time`,

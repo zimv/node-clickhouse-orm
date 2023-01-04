@@ -1,10 +1,10 @@
-import { ClickhouseOrm, DATA_TYPE, ModelRigisterAndCreateTableParams } from "../lib/index";
+import { ClickhouseOrm, DATA_TYPE, ModelSqlCreateTableParams } from "../lib/index";
 import * as colors from "colors/safe";
 
 /**
  * defined Schema
  */
-const table1Schema: ModelRigisterAndCreateTableParams = {
+const table1Schema: ModelSqlCreateTableParams = {
   tableName: "table1",
   schema: {
     time: { type: DATA_TYPE.DateTime, default: Date },
@@ -12,7 +12,6 @@ const table1Schema: ModelRigisterAndCreateTableParams = {
     browser: { type: DATA_TYPE.String },
     browser_v: { type: DATA_TYPE.String },
   },
-  autoSync: true,
   createTable: (dbTableName, db) => {
     // dbTableName = db + '.' + tableName = (orm_test.table1)
     return `
