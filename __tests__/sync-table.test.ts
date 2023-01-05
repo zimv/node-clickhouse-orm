@@ -1,4 +1,4 @@
-import { ClickhouseOrm, DATA_TYPE } from "../lib";
+import { ClickhouseOrm } from "../lib";
 
 import {
   initConfig,
@@ -13,7 +13,7 @@ describe("Sync table test", () => {
     orm = ClickhouseOrm(initConfig);
     orm2 = ClickhouseOrm(initConfig);
     await orm.createDatabase();
-    // delete olb table
+    // delete old table
     await orm.client
     .query(
       `DROP TABLE IF EXISTS ${initConfig.db.name}.${modelSyncTableParams3.tableName}`

@@ -49,14 +49,9 @@ const doDemo = async () => {
   // register schema and create [if] table
   const tableModel = await chOrm.model(tableSchema);
 
-  // tableSchema.schema.arr = { type: DATA_TYPE.Other('Array( String )') }
-  // await chOrm.model(tableSchema);
-  // return
-
   const uuidRes: any = await chOrm.client
     .query(`SELECT generateUUIDv4() as uuid`)
     .toPromise();
-  // The `UUID` does not need to set a value
   await tableModel.create({
     time: new Date(),
     int32: 666,
