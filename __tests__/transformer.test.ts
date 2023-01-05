@@ -1,11 +1,19 @@
 import { insertSQL, object2Sql, deleteObject2Sql } from "../lib/transformer";
+import { DATA_TYPE } from "../lib/data-type";
 
-test('insertSQL car and ["name", "age", "color"] can generate "INSERT INTO car (name,age,color)"', () => {
-  const column = ["name", "age", "color"];
-
-  const table = "car";
-
-  expect(insertSQL(table, column)).toBe("INSERT INTO car (name,age,color)");
+test('function insertSQL & UUID filter', () => {
+  const schemaInstance = {
+    columns: ["name", "age", "color", "uuid"],
+    schemaConfig: {
+      name: {type: DATA_TYPE.String},
+      age: {type: DATA_TYPE.Int32},
+      color: {type: DATA_TYPE.String},
+      uuid: {type: DATA_TYPE.UUID},
+    }
+  };
+  
+  const tableName = "car";
+  expect(insertSQL(tableName, schemaInstance as any)).toBe("INSERT INTO car (name,age,color)");
 });
 
 test("object2Sql car and condition can generate `SELECT name,age from car WHERE color='red' ORDER BY age DESC LIMIT 1,2`", () => {

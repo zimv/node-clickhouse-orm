@@ -5,7 +5,7 @@ import Schema from "../lib/schema";
 import DataInstance from "../lib/dataInstance";
 import * as Log from "../lib/log";
 
-import { initConfig, modelSqlCreateTableParams } from "..//mock/index";
+import { initConfig, modelSqlCreateTableParams } from "../mock/index";
 import { mocked } from "jest-mock";
 
 jest.mock("../lib/schema");
@@ -81,7 +81,9 @@ describe("model can work normal", () => {
       db: initConfig.db,
       schema: modelSqlCreateTableParams.schema,
     });
+    // Fix Schema mocked
     model["schemaInstance"]["columns"] = ["status"];
+    model["schemaInstance"]["schemaConfig"] = modelSqlCreateTableParams.schema;
 
     await model.insertMany([{ status: 1 }, { status: 2 }]);
 

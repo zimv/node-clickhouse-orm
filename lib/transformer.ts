@@ -1,17 +1,29 @@
 import DataInstance from "./dataInstance";
+import { DATA_TYPE } from "./data-type";
+import Schema from "./schema";
+
+// If database auto set value need to remove column
+const DbAutoSetValueDataTypeFilter = [];
 /**
  * Get a pure data instead of a model instance
  */
-export const getPureData = (keys: string[], dataInstance: DataInstance) => {
+export const getPureData = (
+  schemaInstance: Schema,
+  dataInstance: DataInstance
+) => {
   const data = {};
-  keys.forEach((key) => {
+  schemaInstance.columns.forEach((key) => {
+    if (DbAutoSetValueDataTypeFilter.includes(schemaInstance.schemaConfig[key].type)) return;
     data[key] = dataInstance[key] != undefined ? dataInstance[key] : null;
   });
   return data;
 };
 
-export const insertSQL = (table: string, keys: string[]) => {
-  return `INSERT INTO ${table} (${keys.join(",")})`;
+export const insertSQL = (tableName: string, schemaInstance: Schema) => {
+  const headers = schemaInstance.columns.filter(
+    (key) => !DbAutoSetValueDataTypeFilter.includes(schemaInstance.schemaConfig[key].type)
+  );
+  return `INSERT INTO ${tableName} (${headers.join(",")})`;
 };
 
 export interface SqlObject {

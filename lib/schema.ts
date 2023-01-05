@@ -3,13 +3,11 @@ import DataInstance from "./dataInstance";
 import { isObject, isObjectDate } from "./utils";
 import { ErrorLog } from "./log";
 
-export interface SchemaTable {
-  [key: string]: SchemaObj;
-}
-
-export interface SchemaObj {
-  type: DATA_TYPE_DEFINE;
-  default?: any;
+export interface SchemaConfig {
+  [key: string]: {
+    type: DATA_TYPE_DEFINE;
+    default?: any;
+  };
 }
 
 const errorThrow = ({ column, newVal, columnType }) => {
@@ -18,18 +16,18 @@ const errorThrow = ({ column, newVal, columnType }) => {
   throw new Error(info);
 };
 export default class Schema {
-  // SchemaObj
-  public obj;
+  // SchemaConfig
+  public schemaConfig;
   public columns;
 
-  constructor(schemaObj: SchemaTable) {
-    this.obj = schemaObj;
-    this.columns = Object.keys(schemaObj);
+  constructor(schemaConfig: SchemaConfig) {
+    this.schemaConfig = schemaConfig;
+    this.columns = Object.keys(schemaConfig);
 
     return this;
   }
 
-  proxyAttr(obj: SchemaTable, data: DataInstance, column: string) {
+  proxyAttr(obj: SchemaConfig, data: DataInstance, column: string) {
     let value;
     // set default value
     const defaultVal = obj[column].default;

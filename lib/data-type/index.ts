@@ -1,35 +1,38 @@
 import { dataTypeValidation, FunctionValidation } from "./validation";
 export { FunctionValidation } from "./validation";
 export type DATA_TYPE_DEFINE = {
-  validation: string | FunctionValidation;
+  validation?: string | FunctionValidation;
   columnType: string;
 };
 export type DATA_TYPE_FUNCTION_DEFINE = (...arg: any) => DATA_TYPE_DEFINE;
 
 export interface I_DATA_TYPES {
   UInt8: DATA_TYPE_DEFINE;
-  UInt16: DATA_TYPE_DEFINE,
-  UInt32: DATA_TYPE_DEFINE,
-  UInt64: DATA_TYPE_DEFINE,
-  UInt128: DATA_TYPE_DEFINE,
-  UInt256: DATA_TYPE_DEFINE,
-  Int8: DATA_TYPE_DEFINE,
-  Int16: DATA_TYPE_DEFINE,
-  Int32: DATA_TYPE_DEFINE,
-  Int64: DATA_TYPE_DEFINE,
-  Int128: DATA_TYPE_DEFINE,
-  Int256: DATA_TYPE_DEFINE,
-  Float32: DATA_TYPE_DEFINE,
-  Float64: DATA_TYPE_DEFINE,
-  Boolean: DATA_TYPE_DEFINE,
-  String: DATA_TYPE_DEFINE,
-  UUID: DATA_TYPE_DEFINE,
-  Date: DATA_TYPE_DEFINE,
-  Date32: DATA_TYPE_DEFINE,
-  DateTime: DATA_TYPE_DEFINE,
-  DateTime64: DATA_TYPE_DEFINE,
-  FixedString: DATA_TYPE_FUNCTION_DEFINE,
-  LowCardinality: DATA_TYPE_FUNCTION_DEFINE,
+  UInt16: DATA_TYPE_DEFINE;
+  UInt32: DATA_TYPE_DEFINE;
+  UInt64: DATA_TYPE_DEFINE;
+  UInt128: DATA_TYPE_DEFINE;
+  UInt256: DATA_TYPE_DEFINE;
+  Int8: DATA_TYPE_DEFINE;
+  Int16: DATA_TYPE_DEFINE;
+  Int32: DATA_TYPE_DEFINE;
+  Int64: DATA_TYPE_DEFINE;
+  Int128: DATA_TYPE_DEFINE;
+  Int256: DATA_TYPE_DEFINE;
+  Float32: DATA_TYPE_DEFINE;
+  Float64: DATA_TYPE_DEFINE;
+  Boolean: DATA_TYPE_DEFINE;
+  String: DATA_TYPE_DEFINE;
+  UUID: DATA_TYPE_DEFINE;
+  Date: DATA_TYPE_DEFINE;
+  Date32: DATA_TYPE_DEFINE;
+  DateTime: DATA_TYPE_DEFINE;
+  DateTime64: DATA_TYPE_DEFINE;
+  FixedString: DATA_TYPE_FUNCTION_DEFINE;
+  LowCardinality: DATA_TYPE_FUNCTION_DEFINE;
+  Enum: DATA_TYPE_FUNCTION_DEFINE;
+  Enum8: DATA_TYPE_FUNCTION_DEFINE;
+  Enum16: DATA_TYPE_FUNCTION_DEFINE;
 }
 // Data Type
 export const DATA_TYPE: I_DATA_TYPES = {
@@ -127,6 +130,24 @@ export const DATA_TYPE: I_DATA_TYPES = {
     return {
       validation: type.validation,
       columnType: `LowCardinality(${type.columnType})`,
+    };
+  },
+  Enum: (enums: string) => {
+    return {
+      validation: dataTypeValidation.Enum,
+      columnType: `Enum(${enums})`,
+    };
+  },
+  Enum8: (enums: string) => {
+    return {
+      validation: dataTypeValidation.Enum8,
+      columnType: `Enum8(${enums})`,
+    };
+  },
+  Enum16: (enums: string) => {
+    return {
+      validation: dataTypeValidation.Enum16,
+      columnType: `Enum16(${enums})`,
     };
   },
 };

@@ -3,7 +3,7 @@ interface DataTypeValidation {
   [key: string]: string | FunctionValidation;
   ['FixedString']: FunctionValidation;
 }
-// Validate Data Type
+// Validate Data Type when INSERT INTO
 export const dataTypeValidation: DataTypeValidation = {
   UInt8: "number",
   UInt16: "number",
@@ -26,6 +26,9 @@ export const dataTypeValidation: DataTypeValidation = {
   Date32: "date|string|number",
   DateTime: "date|string|number",
   DateTime64: "date|string|number",
+  Enum: 'string',
+  Enum8: 'string',
+  Enum16: 'string',
   FixedString(value, N) {
     if (value.length > N) return false;
     return true;

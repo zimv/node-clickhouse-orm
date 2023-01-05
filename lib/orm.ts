@@ -1,6 +1,6 @@
 import { ClickHouse } from "clickhouse";
 import Model from "./model";
-import { SchemaTable } from "./schema";
+import { SchemaConfig } from "./schema";
 import { getClusterStr, getDatabaseEngineStr } from "./transformer";
 import { Log, DebugLog, ErrorLog } from "./log";
 
@@ -20,18 +20,18 @@ export interface OrmInitParams {
 
 export interface ModelParams {
   tableName: string;
-  schema: SchemaTable;
+  schema: SchemaConfig;
 }
 export interface ModelSyncTableParams {
   tableName: string;
-  schema: SchemaTable;
+  schema: SchemaConfig;
   autoCreate: boolean;
   options?: string;
   autoSync?: boolean;
 }
 export interface ModelSqlCreateTableParams {
   tableName: string;
-  schema: SchemaTable;
+  schema: SchemaConfig;
   createTable?: (dbTableName: string, db: DbParams) => string;
 }
 
@@ -77,7 +77,7 @@ export default class ClickhouseOrm {
   }
 
   // diff
-  diffTableMeta(codeSchema: SchemaTable, tableMeta: TableMeta) {
+  diffTableMeta(codeSchema: SchemaConfig, tableMeta: TableMeta) {
     const tableMetaMap = {};
     tableMeta.forEach((column) => {
       tableMetaMap[column.name] = column.type;
