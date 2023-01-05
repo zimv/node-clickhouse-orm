@@ -1,5 +1,6 @@
 import * as dayjs from "dayjs";
 import { ClickhouseOrm, DATA_TYPE, ModelSqlCreateTableParams } from "../lib/index";
+import { clientConfig } from "../mock";
 
 /**
  * defined Schema
@@ -35,17 +36,7 @@ const db = {
   name: "orm_test",
 };
 const chOrm = ClickhouseOrm({
-  client: {
-    url: "localhost",
-    port: "8123",
-    basicAuth: {
-      username: "default",
-      password: "",
-    },
-    debug: false,
-    isUseGzip: true,
-    format: "json", // "json" || "csv" || "tsv"
-  },
+  client: clientConfig,
   db,
   debug: true,
 });

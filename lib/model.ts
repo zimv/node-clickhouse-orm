@@ -34,7 +34,6 @@ export default class Model {
     this.debug = debug;
 
     this.schemaInstance = new Schema(schema);
-    console.log(this.schemaInstance)
     return this;
   }
 

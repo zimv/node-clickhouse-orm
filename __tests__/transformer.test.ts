@@ -13,7 +13,7 @@ test('function insertSQL & UUID filter', () => {
   };
   
   const tableName = "car";
-  expect(insertSQL(tableName, schemaInstance as any)).toBe("INSERT INTO car (name,age,color)");
+  expect(insertSQL(tableName, schemaInstance as any)).toBe("INSERT INTO car (name,age,color,uuid)");
 });
 
 test("object2Sql car and condition can generate `SELECT name,age from car WHERE color='red' ORDER BY age DESC LIMIT 1,2`", () => {

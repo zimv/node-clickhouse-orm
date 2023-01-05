@@ -26,7 +26,6 @@ export const dataTypeValidation: DataTypeValidation = {
   Date32: "date|string|number",
   DateTime: "date|string|number",
   DateTime64: "date|string|number",
-  Enum: 'string',
   Enum8: 'string',
   Enum16: 'string',
   FixedString(value, N) {

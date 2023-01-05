@@ -2,7 +2,8 @@ import { ClickHouse } from "clickhouse";
 import Model from "./model";
 import { SchemaConfig } from "./schema";
 import { getClusterStr, getDatabaseEngineStr } from "./transformer";
-import { Log, DebugLog, ErrorLog } from "./log";
+import { Log, ErrorLog } from "./log";
+import { dataTypeFilterUnnecessarySpace } from "./utils";
 
 /**
  * name:string
@@ -87,7 +88,8 @@ export default class ClickhouseOrm {
     Object.keys(codeSchema).map((columnName) => {
       if (tableMetaMap[columnName]) {
         if (
-          codeSchema[columnName].type.columnType !== tableMetaMap[columnName]
+          dataTypeFilterUnnecessarySpace(codeSchema[columnName].type.columnType) !==
+          dataTypeFilterUnnecessarySpace(tableMetaMap[columnName])
         ) {
           modifyColumns.push({
             name: columnName,

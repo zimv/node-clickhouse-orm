@@ -1,4 +1,5 @@
 import { ClickhouseOrm, DATA_TYPE, ModelSqlCreateTableParams } from "../lib/index";
+import { clientConfig } from "../mock";
 import * as colors from "colors/safe";
 
 /**
@@ -36,18 +37,7 @@ const db = {
   cluster: "default_cluster",
 };
 const chOrm = ClickhouseOrm({
-  client: {
-    // It must be a clickhouse cluster
-    url: "localhost",
-    port: "8123",
-    basicAuth: {
-      username: "default",
-      password: "",
-    },
-    debug: false,
-    isUseGzip: true,
-    format: "json", // "json" || "csv" || "tsv"
-  },
+  client: clientConfig, // It must be a clickhouse cluster
   db,
   debug: true,
 });

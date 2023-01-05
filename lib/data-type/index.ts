@@ -4,7 +4,7 @@ export type DATA_TYPE_DEFINE = {
   validation?: string | FunctionValidation;
   columnType: string;
 };
-export type DATA_TYPE_FUNCTION_DEFINE = (...arg: any) => DATA_TYPE_DEFINE;
+export type DATA_TYPE_FUNCTION_DEFINE = (dateTypeDefine: any) => DATA_TYPE_DEFINE;
 
 export interface I_DATA_TYPES {
   UInt8: DATA_TYPE_DEFINE;
@@ -30,9 +30,27 @@ export interface I_DATA_TYPES {
   DateTime64: DATA_TYPE_DEFINE;
   FixedString: DATA_TYPE_FUNCTION_DEFINE;
   LowCardinality: DATA_TYPE_FUNCTION_DEFINE;
-  Enum: DATA_TYPE_FUNCTION_DEFINE;
+  /**
+   * 
+   * @param string 
+   * like: 'hello' = 1, 'world' = 2
+   * @desc number [-128, 127]
+   */
   Enum8: DATA_TYPE_FUNCTION_DEFINE;
+  /**
+   * 
+   * @param string 
+   * like: 'hello' = 3000, 'world' = 3500
+   * @desc number [-32768, 32767]
+   */
   Enum16: DATA_TYPE_FUNCTION_DEFINE;
+  /**
+   * 
+   * @param columnType 
+   * Clickhouse dataTypes: Array(T), JSON, Map(key, value), IPv4, Nullable(), more...
+   * @desc No `INSERT` data validation provided
+   */
+  Other: DATA_TYPE_FUNCTION_DEFINE;
 }
 // Data Type
 export const DATA_TYPE: I_DATA_TYPES = {
@@ -132,12 +150,6 @@ export const DATA_TYPE: I_DATA_TYPES = {
       columnType: `LowCardinality(${type.columnType})`,
     };
   },
-  Enum: (enums: string) => {
-    return {
-      validation: dataTypeValidation.Enum,
-      columnType: `Enum(${enums})`,
-    };
-  },
   Enum8: (enums: string) => {
     return {
       validation: dataTypeValidation.Enum8,
@@ -148,6 +160,11 @@ export const DATA_TYPE: I_DATA_TYPES = {
     return {
       validation: dataTypeValidation.Enum16,
       columnType: `Enum16(${enums})`,
+    };
+  },
+  Other: (columnType: string) => {
+    return {
+      columnType: columnType,
     };
   },
 };
