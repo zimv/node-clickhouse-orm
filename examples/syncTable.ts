@@ -2,7 +2,7 @@ import { ClickhouseOrm, DATA_TYPE, ModelSyncTableConfig } from "../lib/index";
 import { clientConfig } from "../mock";
 
 /**
- * defined Schema
+ * defined Model
  */
 const commanParams = {
   tableName: "testsync",

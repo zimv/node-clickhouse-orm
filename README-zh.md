@@ -5,21 +5,21 @@
 <a href="https://github.com/zimv/node-clickhouse-orm" alt="Github forks"><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/57da9f95623043dbb052d873ebeac981~tplv-k3u1fbpfcp-zoom-1.image"></a>
 <a href="https://github.com/zimv/node-clickhouse-orm" alt="Github contributors"><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/ab0ae120764e474db09c743634b102f9~tplv-k3u1fbpfcp-zoom-1.image"></a>
 
-# clickhouse-orm  [(中文 README)](https://github.com/zimv/node-clickhouse-orm/blob/main/README-zh.md)
+# clickhouse-orm  [(English README)](https://github.com/zimv/node-clickhouse-orm/blob/main/README.md)
 
 [![Join the chat at https://gitter.im/zimv/node-clickhouse-orm](https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/8230cfb055bc4f1699e1749b6a7a3421~tplv-k3u1fbpfcp-zoom-1.image)](https://gitter.im/zimv/node-clickhouse-orm?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-Clickhouse ORM for Nodejs. Send query over HTTP interface. Using [TimonKK/clickhouse](https://github.com/TimonKK/clickhouse).
+Clickhouse ORM for Nodejs. 使用 HTTP 接口通信. 使用 [TimonKK/clickhouse](https://github.com/TimonKK/clickhouse) 作为客户端.
 
-# Install:
+# 安装:
 
 ```
 npm i clickhouse-orm
 ```
 
-# Usage
+# 使用
 
-**Create instance：**
+**创建ORM实例：**
 
 ```typescript
 const { ClickhouseOrm, DATA_TYPE, setLogService } = require("clickhouse-orm");
@@ -43,10 +43,11 @@ const chOrm = ClickhouseOrm({
 });
 ```
 
-**Define Model：**
+**定义数据模型：**
 * ModelConfig
 
 ```typescript
+
 import { DATA_TYPE, ModelSqlCreateTableConfig } from 'clickhouse-orm';
 const xxxSchema: ModelSqlCreateTableConfig = {
   // table name
@@ -63,9 +64,10 @@ const xxxSchema: ModelSqlCreateTableConfig = {
 ----
 * ModelSyncTableConfig
 
-Automatically create tables and automatically synchronize table field structures
+支持自动创建表和自动同步表字段结构
 
 ```typescript
+
 import { DATA_TYPE, ModelSyncTableConfig } from 'clickhouse-orm';
 const oldSchema: ModelSyncTableConfig = {
   tableName: "xxx",
@@ -81,8 +83,7 @@ const oldSchema: ModelSyncTableConfig = {
   autoSync: true,
 };
 ```
-Synchronize the table structure (just the field columns) when creating the model. When the model is created, the field structure of the remote database table will be pulled for comparison with the schema in the current code. Finally, the ORM will automatically execute (add, delete, and modify) statements.
-
+模型创建时同步表结构(仅仅是字段列) 。模型创建时将会拉取远程数据库表的字段结构和当前代码中的 **schema** 进行对比，最终 **ORM** 会自动执行（增删改）语句。
 
 ```typescript
 const newSchema = {
@@ -95,15 +96,15 @@ const newSchema = {
 }
 chOrm.model(newSchema)
 ```
-
 > clickhouse-orm-log: sync table structure: ALTER TABLE orm_test.xxx  DROP COLUMN will_deleted 
 
 > clickhouse-orm-log: sync table structure: ALTER TABLE orm_test.xxx  ADD COLUMN add_column String 
 
 > clickhouse-orm-log: sync table structure: ALTER TABLE orm_test.xxx  MODIFY COLUMN will_typeChanged Int32
+> 
 
-Unrecognized field name modification! The following configuration will delete **column1** and add **column2**.
 
+无法识别字段名修改！下面的配置将会删除 **column1**，新增 **column2**。
 ```typescript
 oldSchema = {
   column1: { type: DATA_TYPE.String },
@@ -113,12 +114,13 @@ newSchema = {
 }
 ```
 
-**More in [SyncTable Example](https://github.com/zimv/node-clickhouse-orm/blob/main/examples/syncTable.ts).**
+
+**详情参考 [SyncTable Example](https://github.com/zimv/node-clickhouse-orm/blob/main/examples/syncTable.ts).**
 
 ----
 * ModelSqlCreateTableConfig
 
-Customized table creation statement, and the table will be created automatically when the model is created
+自定义建表语句，模型创建会自动创建表
 
 ```typescript
 
@@ -197,11 +199,11 @@ const doDemo = async () => {
 doDemo();
 ```
 
-**More in [Basic Example](https://github.com/zimv/node-clickhouse-orm/blob/main/examples/basic.js).**
+**详情参考 [Basic Example](https://github.com/zimv/node-clickhouse-orm/blob/main/examples/basic.js).**
 
-# Overview
+# 概述
 
-`Note`: '?' is a Optional
+`注意`: **'?'** 代表可选项
 
 ### ClickhouseOrm
 
@@ -209,11 +211,11 @@ doDemo();
 
 `db` : object<{name:string, engine?:string, cluster?:string}>
 
-> name: database name
+> name: 数据库名称
 
-> engine?: database engine
+> engine?: 数据库引擎
 
-> cluster?: cluster name
+> cluster?: 集群名称
 
 `debug` : boolean
 
@@ -221,41 +223,42 @@ doDemo();
 
 `client` : object
 
-> Drive configuration. More in [TimonKK/clickhouse](https://github.com/TimonKK/clickhouse).
+> 客户端驱动配置. 详情请看 [TimonKK/clickhouse](https://github.com/TimonKK/clickhouse).
 
 ### ModelConfig
 * ModelConfig
 
-|  | required | type | description |
+|  | 是否必选项 | 类型 | 描述 |
 | ------ | ------ | ------ | ------ |
-| tableName | true | string | It is the table name. |
-| schema | true | { [column]: { type?, default? } } | `Type` defines the data type, and `default` sets the default value |
+| tableName | true | string | 表名 |
+| schema | true | { [column]: { type?, default? } } | `type`定义数据类型, `default` 设置默认值|
 
 ----
 * ModelSyncTableConfig
 
-|  | required | type | description |
+|  | 是否必选项 | 类型 | 描述 |
 | ------ | ------ | ------ | ------ |
-| tableName | true | string | It is the table name. |
-| schema | true | { [column]: { type?, default? } } | `Type` defines the data type, and `default` sets the default value |
-| options | true | string | Create table setting |
-| autoCreate | true | boolean | Auto create table |
-| autoSync | false | boolean | Auto sync table structure`(Careful use)` |
+| tableName | true | string | 表名 |
+| schema | true | { [column]: { type?, default? } } | `type`定义数据类型, `default` 设置默认值|
+| options | true | string | 建表的其他配置 |
+| autoCreate | true | boolean | 是否自动建表 |
+| autoSync | false | boolean | 是否自动同步表结构`（谨慎使用）` |
+
 
 ----
 * ModelSqlCreateTableConfig
 
-|  | required | type | description |
+|  | 是否必选项 | 类型 | 描述 |
 | ------ | ------ | ------ | ------ |
-| tableName | true | string | It is the table name. |
-| schema | true | { [column]: { type?, default? } } | `Type` defines the data type, and `default` sets the default value |
-| createTable | true | string | It is the SQL for creating tables.When model is executed, this SQL will be executed. It is suggested to add 'IF NOT EXISTS'. <br> Watch out !!! >>>>> If the table already exists and you want to modify it. You need to execute the modification sql through other clients（Such as Remote terminal） and update the code of the Schema!!!|
+| tableName | true | string | 表名 |
+| schema | true | { [column]: { type?, default? } } | `type`定义数据类型, `default` 设置默认值|
+| createTable | true | string | 自动建表的 **SQL** 语句，模型创建时会执行. 建议使用 **'IF NOT EXISTS'** 避免报错. <br> 注意 !!! >>>>> 如果表结构要变动，此配置不会同步，你需要使用其他客户端（比如终端连接数据库）去执行改表语句。最后再回来修改代码|
 
 
 
 ### DATA_TYPE
 
-Clickhouse data type. Most of the following data will be validated by ORM, but only the basic data type `number | string | boolean | date` will be validated, not the most standard data type. For example, in `Int8`, ORM only verifies the `number` type.
+clickhouse数据类型. 下面大部分数据 **ORM** 会验证，但也仅验证基本的数据类型`number | string | boolean | date`，不会用最标准的数据类型验证。比如 **Int8**，**ORM** 只验证 **number** 类型。
 
 
 ```typescript
@@ -315,14 +318,13 @@ Clickhouse data type. Most of the following data will be validated by ORM, but o
    */
   Other;
 ```
-**More in [Datatype Example](https://github.com/zimv/node-clickhouse-orm/blob/main/examples/datatype.ts).**
+**详情参考 [Datatype Example](https://github.com/zimv/node-clickhouse-orm/blob/main/examples/datatype.ts).**
 ### Log
+**setLogService** 是一个全局配置，每一个 **clickhouse-orm** 实例都会被影响。
 
-The **setLogService** is a global configuration method and will affect all instances.
+`默认: console.log`
 
-`Default: console.log`
-
-Custom example: **[winston](https://github.com/winstonjs/winston)**
+使用其他日志库示例: **[winston](https://github.com/winstonjs/winston)**
 
 ```javascript
 const { setLogService } = require("clickhouse-orm");
@@ -332,7 +334,7 @@ const logger = winston.createLogger();
 setLogService(logger.info);
 ```
 
-### Use SQL directly：
+### 直接写纯 SQL 语句：
 
 ```javascript
 chOrm.client
@@ -343,9 +345,9 @@ chOrm.client
   });
 ```
 
-The `chOrm.client` is the [TimonKK/clickhouse](https://github.com/TimonKK/clickhouse) instance.
+`chOrm.client` 是 [TimonKK/clickhouse](https://github.com/TimonKK/clickhouse) 的实例.
 
-# [More Examples](https://github.com/zimv/node-clickhouse-orm/blob/main/examples/more.ts)
+# [更多示例](https://github.com/zimv/node-clickhouse-orm/blob/main/examples/more.ts)
 
 ### Find
 
@@ -378,7 +380,7 @@ const queryExample1 = ({ Model, status, beginTime, endTime }) => {
 };
 ```
 
-Final executed SQL:
+ORM 最终执行的 SQL:
 
 ```sql
 SELECT * from orm_test.table1 where status='1' and time>='2022-02-04 15:34:22' and time<='2022-02-05 15:34:22'  ORDER BY time ASC LIMIT 5
@@ -400,7 +402,7 @@ const countExample1 = ({ Model }) => {
 };
 ```
 
-Final executed SQL:
+ORM 最终执行的 SQL:
 
 ```sql
 SELECT count(*) AS total from orm_test.table1
@@ -415,13 +417,13 @@ Table1Model.find({
 });
 ```
 
-Final executed SQL:
+ORM 最终执行的 SQL:
 
 ```sql
 SELECT status,browser from orm_test.table1  GROUP BY status,browser
 ```
 
-### Nested Queries
+### 嵌套查询
 
 ```javascript
 Table1Model.find([
@@ -435,7 +437,7 @@ Table1Model.find([
 ]);
 ```
 
-Final executed SQL:
+ORM 最终执行的 SQL:
 
 ```sql
 SELECT count() as browserTotal from (SELECT browser from orm_test.table1  GROUP BY browser  )
@@ -459,7 +461,7 @@ data.save().then((res) => {
 });
 ```
 
-Final executed SQL:
+ORM 最终执行的 SQL:
 
 ```
 INSERT INTO orm_test.table1 (time,status,browser,browser_v) [{"time":"2022-02-05T07:51:16.919Z","status":1,"browser":"chrome","browser_v":"90.0.1.21"}]\
@@ -477,7 +479,7 @@ await Table1Model.create({
 });
 ```
 
-Final executed SQL:
+ORM 最终执行的 SQL:
 
 ```
 INSERT INTO orm_test.table1 (time,status,browser,browser_v) [{"time":"2022-02-05T07:51:16.919Z","status":1,"browser":"chrome","browser_v":"90.0.1.21"}]\
@@ -507,7 +509,7 @@ Table1Model.insertMany(
 );
 ```
 
-Final executed SQL:
+ORM 最终执行的 SQL:
 
 ```sql
 INSERT INTO orm_test.table1 (time,status,browser,browser_v) [{"time":"2022-02-05T07:34:22.226Z","status":2,"browser":"IE","browser_v":"10.0.1.21"},{"time":"2022-02-05T07:34:22.226Z","status":2,"browser":"FF","browser_v":"2.0.3"},{"time":"2022-02-05T07:34:22.226Z","status":3,"browser":"IE","browser_v":"1.1.1"}]
@@ -522,15 +524,15 @@ Table1Model.delete({
 })
 ```
 
-Final executed SQL:
+ORM 最终执行的 SQL:
 
 ```sql
 ALTER TABLE orm_test.table1  DELETE  WHERE browser='Chrome'
 ```
 
-## cluster
+## cluster 集群
 
-**Create a cluster instance：**
+**创建一个集群实例：**
 
 ```javascript
 const { ClickhouseOrm, DATA_TYPE, setLogService } = require("clickhouse-orm");
@@ -557,6 +559,6 @@ await chOrm.createDatabase();
 const Table2Model = await chOrm.model(table2Schema);
 ```
 
-# Wechat Discussion
+# 微信讨论群
 
 [Click to join](https://github.com/zimv/node-clickhouse-orm/issues/3)

@@ -3,7 +3,7 @@ import { clientConfig } from "../mock";
 import * as colors from "colors/safe";
 
 /**
- * defined Schema
+ * defined Model
  */
 const table1Schema: ModelSqlCreateTableConfig = {
   tableName: "table1",

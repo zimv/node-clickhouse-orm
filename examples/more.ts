@@ -3,7 +3,7 @@ import { ClickhouseOrm, DATA_TYPE, ModelSqlCreateTableConfig } from "../lib/inde
 import { clientConfig } from "../mock";
 
 /**
- * defined Schema
+ * defined Model
  */
 const table1Schema: ModelSqlCreateTableConfig = {
   tableName: "table1",

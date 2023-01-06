@@ -29,7 +29,7 @@ export interface ModelSyncTableConfig {
   tableName: string;
   schema: SchemaConfig;
   autoCreate: boolean;
-  options?: string;
+  options: string;
   autoSync?: boolean;
 }
 export interface ModelSqlCreateTableConfig {
