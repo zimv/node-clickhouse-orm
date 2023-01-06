@@ -5,7 +5,7 @@ import { clientConfig } from "../mock";
  * defined Schema
  */
 const tableSchema: ModelSyncTableParams = {
-  tableName: "full_datatype_table",
+  tableName: "datatype_table",
   schema: {
     time: { type: DATA_TYPE.DateTime, default: Date },
     int32: { type: DATA_TYPE.Int32 },

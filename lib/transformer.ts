@@ -1,5 +1,5 @@
 import DataInstance from "./dataInstance";
-import { DATA_TYPE } from "./data-type";
+import { DATA_TYPE } from "./dataType";
 import Schema from "./schema";
 
 // If database auto set value need to remove column

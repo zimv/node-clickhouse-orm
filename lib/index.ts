@@ -2,7 +2,7 @@ import { ClickHouse } from 'clickhouse';
 import Orm, { DbParams } from './orm';
 import { ErrorLog } from "./log";
 export { setLogService } from './log';// Singleton Pattern
-export { DATA_TYPE } from './data-type';
+export { DATA_TYPE } from './dataType';
 export * from './orm';
 export interface InitParams {
   client: Object;// TimonKK/clickhouse config

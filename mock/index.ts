@@ -3,7 +3,7 @@ import {
   ModelSqlCreateTableParams,
   ModelSyncTableParams,
 } from "../lib";
-import { DATA_TYPE } from "../lib/data-type";
+import { DATA_TYPE } from "../lib/dataType";
 
 export const clientConfig = {
   url: "localhost",

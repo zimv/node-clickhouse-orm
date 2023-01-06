@@ -1,5 +1,5 @@
 import { insertSQL, object2Sql, deleteObject2Sql } from "../lib/transformer";
-import { DATA_TYPE } from "../lib/data-type";
+import { DATA_TYPE } from "../lib/dataType";
 
 test('function insertSQL & UUID filter', () => {
   const schemaInstance = {

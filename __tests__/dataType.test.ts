@@ -2,7 +2,7 @@ import { ClickhouseOrm, DATA_TYPE } from "../lib";
 import { initConfig } from "../mock/index";
 
 const tableSchema = {
-  tableName: "full_datatype_table",
+  tableName: "datatype_table",
   schema: {
     time: { type: DATA_TYPE.DateTime, default: Date },
     int32: { type: DATA_TYPE.Int32 },

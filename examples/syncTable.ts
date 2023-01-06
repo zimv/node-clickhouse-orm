@@ -1,4 +1,3 @@
-import * as dayjs from "dayjs";
 import { ClickhouseOrm, DATA_TYPE, ModelSyncTableParams } from "../lib/index";
 import { clientConfig } from "../mock";
 

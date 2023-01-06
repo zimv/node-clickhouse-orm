@@ -1,4 +1,4 @@
-import { DATA_TYPE_DEFINE, FunctionValidation } from "./data-type";
+import { DATA_TYPE_DEFINE, FunctionValidation } from "./dataType";
 import DataInstance from "./dataInstance";
 import { isObject, isObjectDate } from "./utils";
 import { ErrorLog } from "./log";

@@ -4,7 +4,9 @@ export type DATA_TYPE_DEFINE = {
   validation?: string | FunctionValidation;
   columnType: string;
 };
-export type DATA_TYPE_FUNCTION_DEFINE = (dateTypeDefine: any) => DATA_TYPE_DEFINE;
+export type DATA_TYPE_FUNCTION_DEFINE = (
+  dateTypeDefine: any
+) => DATA_TYPE_DEFINE;
 
 export interface I_DATA_TYPES {
   UInt8: DATA_TYPE_DEFINE;
@@ -28,26 +30,37 @@ export interface I_DATA_TYPES {
   Date32: DATA_TYPE_DEFINE;
   DateTime: DATA_TYPE_DEFINE;
   DateTime64: DATA_TYPE_DEFINE;
+  /**
+   *
+   * @param Number
+   * @example DATA_TYPE.FixedString(3)
+   */
   FixedString: DATA_TYPE_FUNCTION_DEFINE;
+  /**
+   *
+   * @param DATA_TYPE
+   * @example DATA_TYPE.LowCardinality(DATA_TYPE.String)
+   */
   LowCardinality: DATA_TYPE_FUNCTION_DEFINE;
   /**
-   * 
-   * @param string 
-   * like: 'hello' = 1, 'world' = 2
+   *
+   * @param string
+   * @example DATA_TYPE.Enum8(`'hello' = 1, 'world' = 2`)
    * @desc number [-128, 127]
    */
   Enum8: DATA_TYPE_FUNCTION_DEFINE;
   /**
-   * 
-   * @param string 
-   * like: 'hello' = 3000, 'world' = 3500
+   *
+   * @param string
+   * @example DATA_TYPE.Enum16(`'hello' = 3000, 'world' = 3500`)
    * @desc number [-32768, 32767]
    */
   Enum16: DATA_TYPE_FUNCTION_DEFINE;
   /**
-   * 
-   * @param columnType 
+   *
+   * @param columnType
    * Clickhouse dataTypes: Array(T), JSON, Map(key, value), IPv4, Nullable(), more...
+   * @example DATA_TYPE.Other('Array(String)') , DATA_TYPE.Other('Int8')
    * @desc No `INSERT` data validation provided
    */
   Other: DATA_TYPE_FUNCTION_DEFINE;
