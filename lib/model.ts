@@ -7,17 +7,17 @@ import {
   deleteObject2Sql,
   DeleteSqlObject,
 } from "./transformer";
-import Schema, { SchemaTable } from "./schema";
+import Schema, { SchemaConfig } from "./schema";
 import { DebugLog } from "./log";
-import { DbParams } from "./orm";
+import { DbConfig } from "./orm";
 import DataInstance from "./dataInstance";
 
 export interface ModelOptions {
   client: ClickHouse;
   dbTableName: string;
   debug: boolean;
-  schema: SchemaTable;
-  db: DbParams;
+  schema: SchemaConfig;
+  db: DbConfig;
 }
 
 export default class Model {
@@ -34,7 +34,6 @@ export default class Model {
     this.debug = debug;
 
     this.schemaInstance = new Schema(schema);
-
     return this;
   }
 
@@ -74,19 +73,16 @@ export default class Model {
     const datas = [...dataArray].map((item: Object | DataInstance) => {
       let data;
       if (item instanceof DataInstance) {
-        data = getPureData(this.schemaInstance.columns, item);
+        data = getPureData(this.schemaInstance, item);
       } else {
         const _data = new DataInstance(this, item);
-        data = getPureData(this.schemaInstance.columns, _data);
+        data = getPureData(this.schemaInstance, _data);
       }
       return data;
     });
 
     if (datas && datas.length > 0) {
-      const insertHeaders = insertSQL(
-        this.dbTableName,
-        this.schemaInstance.columns
-      );
+      const insertHeaders = insertSQL(this.dbTableName, this.schemaInstance);
       if (this.debug)
         DebugLog(
           `[>>EXECUTE INSERTMANY<<] ${insertHeaders} ${JSON.stringify(datas)}`

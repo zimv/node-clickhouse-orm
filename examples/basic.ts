@@ -1,56 +1,38 @@
-import { ClickhouseOrm, DATA_TYPE, setLogService } from '../lib/index';
+import { ClickhouseOrm, DATA_TYPE, ModelSyncTableConfig } from "../lib/index";
+import { clientConfig } from "../mock";
 
 /**
- * defined Schema 
+ * defined Model
  */
-const table1Schema = {
-  tableName: 'table1',
+const table1Schema: ModelSyncTableConfig = {
+  tableName: "table1",
   schema: {
     time: { type: DATA_TYPE.DateTime, default: Date },
     status: { type: DATA_TYPE.Int32 },
     browser: { type: DATA_TYPE.String },
-    browser_v: {},
+    browser_v: { type: DATA_TYPE.String },
   },
-  createTable: (dbTableName) => {
-    // dbTableName = db + '.' + tableName = (orm_test.table1)
-    return `
-      CREATE TABLE IF NOT EXISTS ${dbTableName}
-      (
-        time DateTime,
-        status Int32,
-        browser LowCardinality(String),
-        browser_v String
-      )
-      ENGINE = MergeTree
-      PARTITION BY toYYYYMM(time)
-      ORDER BY time`;
-  },
-}
+  autoCreate: true,
+  options: `ENGINE = MergeTree
+  PARTITION BY toYYYYMM(time)
+  ORDER BY time`,
+  autoSync: true,
+};
 
 /**
  * new instance
  */
 const db = {
-  name: 'orm_test',
-  engine: 'Atomic',// default: Atomic
-}
+  name: "orm_test",
+  engine: "Atomic", // default: Atomic
+};
 const chOrm = ClickhouseOrm({
-  client: {
-    url: 'localhost',
-    port: '8123',
-    basicAuth: {
-      username: 'default',
-      password: '',
-    },
-    debug: false,
-    isUseGzip: true,
-    format: 'json', // "json" || "csv" || "tsv"
-  },
+  client: clientConfig,
   db,
-  debug:true
+  debug: true,
 });
 
-const doDemo = async ()=>{
+const doDemo = async () => {
   // create database 'orm_test'
   await chOrm.createDatabase();
 
@@ -63,31 +45,31 @@ const doDemo = async ()=>{
   await Table1Model.create({
     status: 1,
     time: new Date(),
-    browser: 'chrome',
-    browser_v: '90.0.1.21'
-  })
+    browser: "chrome",
+    browser_v: "90.0.1.21",
+  });
 
   //or
 
   // new data model
-  const data = Table1Model.build({status:2});
+  const data = Table1Model.build({ status: 2 });
 
   // set value
   data.time = new Date();
-  data.browser = 'chrome';
-  data.browser_v = '90.0.1.21';
+  data.browser = "chrome";
+  data.browser_v = "90.0.1.21";
 
   // do save
-  const res = await data.save()
-  console.log('save:', res);
+  const res = await data.save();
+  console.log("save:", res);
 
   // do find
   Table1Model.find({
-    select: '*',
+    select: "*",
     limit: 3,
-  }).then((res)=>{
-    console.log('find:', res);
+  }).then((res) => {
+    console.log("find:", res);
   });
-}
+};
 
 doDemo();

@@ -1,16 +1,17 @@
-import { ClickhouseOrm, DATA_TYPE, ModelRigisterParams } from "../lib/index";
+import { ClickhouseOrm, DATA_TYPE, ModelSqlCreateTableConfig } from "../lib/index";
+import { clientConfig } from "../mock";
 import * as colors from "colors/safe";
 
 /**
- * defined Schema
+ * defined Model
  */
-const table1Schema: ModelRigisterParams = {
+const table1Schema: ModelSqlCreateTableConfig = {
   tableName: "table1",
   schema: {
     time: { type: DATA_TYPE.DateTime, default: Date },
     status: { type: DATA_TYPE.Int32 },
     browser: { type: DATA_TYPE.String },
-    browser_v: {},
+    browser_v: { type: DATA_TYPE.String },
   },
   createTable: (dbTableName, db) => {
     // dbTableName = db + '.' + tableName = (orm_test.table1)
@@ -36,18 +37,7 @@ const db = {
   cluster: "default_cluster",
 };
 const chOrm = ClickhouseOrm({
-  client: {
-    // It must be a clickhouse cluster
-    url: "localhost",
-    port: "8123",
-    basicAuth: {
-      username: "default",
-      password: "",
-    },
-    debug: false,
-    isUseGzip: true,
-    format: "json", // "json" || "csv" || "tsv"
-  },
+  client: clientConfig, // It must be a clickhouse cluster
   db,
   debug: true,
 });

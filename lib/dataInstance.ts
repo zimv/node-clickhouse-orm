@@ -5,7 +5,7 @@ import Model from "./model";
 
 export default class DataInstance {
   [key: string]: any;
-  private model;
+  model;
   constructor(model: Model, initData?: Object) {
     this.model = model;
     this.proxyApply();
@@ -30,16 +30,13 @@ export default class DataInstance {
   private proxyApply() {
     const schemaInstance = this.model.schemaInstance;
     schemaInstance.columns.forEach((column: string) => {
-      schemaInstance.proxyAttr(schemaInstance.obj, this, column);
+      schemaInstance.proxyAttr(schemaInstance.schemaConfig, this, column);
     });
   }
   save(): Promise<any> {
     const schemaInstance = this.model.schemaInstance;
-    const data = getPureData(schemaInstance.columns, this);
-    const insertHeaders = insertSQL(
-      this.model.dbTableName,
-      schemaInstance.columns
-    );
+    const data = getPureData(schemaInstance, this);
+    const insertHeaders = insertSQL(this.model.dbTableName, schemaInstance);
     if (this.model.debug)
       DebugLog(`execute save> ${insertHeaders} ${JSON.stringify([data])}`);
     return this.model.client.insert(insertHeaders, [data]).toPromise();

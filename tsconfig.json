@@ -2,24 +2,20 @@
   "compilerOptions": {
     "module": "commonjs",
     "declaration": true,
-    "removeComments": true,
+    "removeComments": false,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
     "target": "es2015",
     "sourceMap": false,
     "outDir": "./dist",
-    "baseUrl": "./",
+    "baseUrl": "./lib",
     "incremental": true,
-    "skipLibCheck": true,
-    "paths": {
-      "@/*": ["./src/*"],
-      "@Root/*": ["./*"],
-      "@App/*": ["./src/app/*"],
-      "@Modules/*": ["./src/modules/*"]
-    }
+    "skipLibCheck": true
   },
   "exclude": [
     "__tests__",
+    "examples",
+    "mock"
   ]
 }

@@ -1,8 +1,8 @@
 
-const { ClickhouseOrm, DATA_TYPE, setLogService} = require('../dist/lib');
+const { ClickhouseOrm, DATA_TYPE, setLogService} = require('../dist');
 
 /**
- * defined Schema 
+ * defined Model 
  */
 const table1Schema = {
   tableName: 'table1',

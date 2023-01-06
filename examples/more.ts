@@ -1,16 +1,17 @@
 import * as dayjs from "dayjs";
-import { ClickhouseOrm, DATA_TYPE, setLogService } from "../lib/index";
+import { ClickhouseOrm, DATA_TYPE, ModelSqlCreateTableConfig } from "../lib/index";
+import { clientConfig } from "../mock";
 
 /**
- * defined Schema
+ * defined Model
  */
-const table1Schema = {
+const table1Schema: ModelSqlCreateTableConfig = {
   tableName: "table1",
   schema: {
     time: { type: DATA_TYPE.DateTime, default: Date },
     status: { type: DATA_TYPE.Int32 },
     browser: { type: DATA_TYPE.String },
-    browser_v: {},
+    browser_v: { type: DATA_TYPE.String },
   },
   createTable: (dbTableName) => {
     // dbTableName = db + '.' + tableName = (orm_test.table1)
@@ -35,17 +36,7 @@ const db = {
   name: "orm_test",
 };
 const chOrm = ClickhouseOrm({
-  client: {
-    url: "localhost",
-    port: "8123",
-    basicAuth: {
-      username: "default",
-      password: "",
-    },
-    debug: false,
-    isUseGzip: true,
-    format: "json", // "json" || "csv" || "tsv"
-  },
+  client: clientConfig,
   db,
   debug: true,
 });
