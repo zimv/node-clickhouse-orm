@@ -1,4 +1,4 @@
-import { ClickhouseOrm, DATA_TYPE, ModelSyncTableParams } from "../lib/index";
+import { ClickhouseOrm, DATA_TYPE, ModelSyncTableConfig } from "../lib/index";
 import { clientConfig } from "../mock";
 
 /**
@@ -12,7 +12,7 @@ const commanParams = {
   autoCreate: true,
   autoSync: true,
 };
-const newModelSyncTableParams: ModelSyncTableParams = {
+const newModelSyncTableConfig: ModelSyncTableConfig = {
   ...commanParams,
   schema: {
     time: { type: DATA_TYPE.DateTime, default: Date },
@@ -21,7 +21,7 @@ const newModelSyncTableParams: ModelSyncTableParams = {
   },
 };
 
-const updateModelSyncTableParams: ModelSyncTableParams = {
+const updateModelSyncTableConfig: ModelSyncTableConfig = {
   ...commanParams,
   schema: {
     time: { type: DATA_TYPE.DateTime, default: Date },
@@ -50,9 +50,9 @@ const doDemo = async () => {
     .toPromise();
 
   // create new table
-  await chOrm.model(newModelSyncTableParams);
+  await chOrm.model(newModelSyncTableConfig);
   // update table
-  await chOrm.model(updateModelSyncTableParams);
+  await chOrm.model(updateModelSyncTableConfig);
 };
 
 doDemo();

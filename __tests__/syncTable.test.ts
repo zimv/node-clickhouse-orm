@@ -2,9 +2,9 @@ import { ClickhouseOrm } from "../lib";
 
 import {
   initConfig,
-  modelSyncTableParams1,
-  modelSyncTableParams2,
-  modelSyncTableParams3,
+  modelSyncTableConfig1,
+  modelSyncTableConfig2,
+  modelSyncTableConfig3,
 } from "../mock/index";
 
 describe("Sync table test", () => {
@@ -16,12 +16,12 @@ describe("Sync table test", () => {
     // delete old table
     await orm.client
     .query(
-      `DROP TABLE IF EXISTS ${initConfig.db.name}.${modelSyncTableParams3.tableName}`
+      `DROP TABLE IF EXISTS ${initConfig.db.name}.${modelSyncTableConfig3.tableName}`
     )
     .toPromise();
     return orm.client
       .query(
-        `DROP TABLE IF EXISTS ${initConfig.db.name}.${modelSyncTableParams1.tableName}`
+        `DROP TABLE IF EXISTS ${initConfig.db.name}.${modelSyncTableConfig1.tableName}`
       )
       .toPromise();
   });
@@ -29,8 +29,8 @@ describe("Sync table test", () => {
   test("sync table `autoCreateTableSql()` and `syncTable()`", async () => {
     const autoCreateTableSqlMock = jest.spyOn(orm, "autoCreateTableSql");
     const syncTableMock = jest.spyOn(orm, "syncTable");
-    await orm.model(modelSyncTableParams1);
-    await orm.model(modelSyncTableParams2);
+    await orm.model(modelSyncTableConfig1);
+    await orm.model(modelSyncTableConfig2);
     expect(autoCreateTableSqlMock).toHaveBeenCalled();
     expect(syncTableMock).toHaveBeenCalled();
   });
@@ -38,8 +38,8 @@ describe("Sync table test", () => {
   test("not sync table", async () => {
     const autoCreateTableSqlMock = jest.spyOn(orm2, "autoCreateTableSql");
     const syncTableMock = jest.spyOn(orm2, "syncTable");
-    await orm2.model(modelSyncTableParams3);
-    await orm2.model(modelSyncTableParams3);
+    await orm2.model(modelSyncTableConfig3);
+    await orm2.model(modelSyncTableConfig3);
     expect(autoCreateTableSqlMock).toHaveBeenCalled();
     expect(syncTableMock).not.toHaveBeenCalled();
   });

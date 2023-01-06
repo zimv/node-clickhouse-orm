@@ -9,7 +9,7 @@ import {
 } from "./transformer";
 import Schema, { SchemaConfig } from "./schema";
 import { DebugLog } from "./log";
-import { DbParams } from "./orm";
+import { DbConfig } from "./orm";
 import DataInstance from "./dataInstance";
 
 export interface ModelOptions {
@@ -17,7 +17,7 @@ export interface ModelOptions {
   dbTableName: string;
   debug: boolean;
   schema: SchemaConfig;
-  db: DbParams;
+  db: DbConfig;
 }
 
 export default class Model {

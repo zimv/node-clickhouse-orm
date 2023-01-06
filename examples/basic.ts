@@ -1,10 +1,10 @@
-import { ClickhouseOrm, DATA_TYPE, ModelSyncTableParams } from "../lib/index";
+import { ClickhouseOrm, DATA_TYPE, ModelSyncTableConfig } from "../lib/index";
 import { clientConfig } from "../mock";
 
 /**
  * defined Schema
  */
-const table1Schema: ModelSyncTableParams = {
+const table1Schema: ModelSyncTableConfig = {
   tableName: "table1",
   schema: {
     time: { type: DATA_TYPE.DateTime, default: Date },

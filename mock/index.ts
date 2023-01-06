@@ -1,7 +1,7 @@
 import {
-  InitParams,
-  ModelSqlCreateTableParams,
-  ModelSyncTableParams,
+  OrmConfig,
+  ModelSqlCreateTableConfig,
+  ModelSyncTableConfig,
 } from "../lib";
 import { DATA_TYPE } from "../lib/dataType";
 
@@ -14,7 +14,7 @@ export const clientConfig = {
   },
 };
 
-export const initConfig: InitParams = {
+export const initConfig: OrmConfig = {
   client: clientConfig,
   db: {
     name: "orm_test",
@@ -23,7 +23,7 @@ export const initConfig: InitParams = {
   debug: true,
 };
 
-export const modelSqlCreateTableParams: ModelSqlCreateTableParams = {
+export const modelSqlCreateTableConfig: ModelSqlCreateTableConfig = {
   tableName: "test",
   schema: {
     time: { type: DATA_TYPE.DateTime, default: Date },
@@ -46,7 +46,7 @@ export const modelSqlCreateTableParams: ModelSqlCreateTableParams = {
   },
 };
 
-export const modelSyncTableParams1: ModelSyncTableParams = {
+export const modelSyncTableConfig1: ModelSyncTableConfig = {
   tableName: "testsync",
   schema: {
     time: { type: DATA_TYPE.DateTime, default: Date },
@@ -60,8 +60,8 @@ export const modelSyncTableParams1: ModelSyncTableParams = {
   autoSync: true,
 };
 
-export const modelSyncTableParams2: ModelSyncTableParams = {
-  ...modelSyncTableParams1,
+export const modelSyncTableConfig2: ModelSyncTableConfig = {
+  ...modelSyncTableConfig1,
   schema: {
     time: { type: DATA_TYPE.DateTime, default: Date },
     will_typeChanged: { type: DATA_TYPE.Int32 },
@@ -69,7 +69,7 @@ export const modelSyncTableParams2: ModelSyncTableParams = {
   },
 };
 
-export const modelSyncTableParams3: ModelSyncTableParams = {
+export const modelSyncTableConfig3: ModelSyncTableConfig = {
   tableName: "testsync2",
   schema: {
     time: { type: DATA_TYPE.DateTime, default: Date },

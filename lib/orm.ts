@@ -4,46 +4,48 @@ import { SchemaConfig } from "./schema";
 import { getClusterStr, getDatabaseEngineStr } from "./transformer";
 import { Log, ErrorLog } from "./log";
 import { dataTypeFilterUnnecessarySpace } from "./utils";
-
-/**
- * name:string
- */
-export interface DbParams {
+export interface DbConfig {
   name: string;
-  engine?: string; // default: Atomic
+  /**
+   * default: Atomic
+   */
+  engine?: string;
   cluster?: string;
 }
-export interface OrmInitParams {
-  client: ClickHouse;
-  db: DbParams;
+export interface OrmConfig {
+  /**
+   * TimonKK/clickhouse config
+   */
+  client: any;
+  db: DbConfig;
   debug: boolean;
 }
 
-export interface ModelParams {
+export interface ModelConfig {
   tableName: string;
   schema: SchemaConfig;
 }
-export interface ModelSyncTableParams {
+export interface ModelSyncTableConfig {
   tableName: string;
   schema: SchemaConfig;
   autoCreate: boolean;
   options?: string;
   autoSync?: boolean;
 }
-export interface ModelSqlCreateTableParams {
+export interface ModelSqlCreateTableConfig {
   tableName: string;
   schema: SchemaConfig;
-  createTable?: (dbTableName: string, db: DbParams) => string;
+  createTable?: (dbTableName: string, db: DbConfig) => string;
 }
 
 type TableMeta = { name: string; type: string }[];
 export default class ClickhouseOrm {
   client: ClickHouse;
-  db: DbParams;
+  db: DbConfig;
   debug: boolean;
   models = {};
 
-  constructor({ client, db, debug }: OrmInitParams) {
+  constructor({ client, db, debug }: OrmConfig) {
     this.client = client;
     this.db = db;
     this.debug = debug;
@@ -88,8 +90,9 @@ export default class ClickhouseOrm {
     Object.keys(codeSchema).map((columnName) => {
       if (tableMetaMap[columnName]) {
         if (
-          dataTypeFilterUnnecessarySpace(codeSchema[columnName].type.columnType) !==
-          dataTypeFilterUnnecessarySpace(tableMetaMap[columnName])
+          dataTypeFilterUnnecessarySpace(
+            codeSchema[columnName].type.columnType
+          ) !== dataTypeFilterUnnecessarySpace(tableMetaMap[columnName])
         ) {
           modifyColumns.push({
             name: columnName,
@@ -137,7 +140,7 @@ export default class ClickhouseOrm {
   }
 
   // auto create sql string
-  autoCreateTableSql(dbTableName: string, modelConfig: ModelSyncTableParams) {
+  autoCreateTableSql(dbTableName: string, modelConfig: ModelSyncTableConfig) {
     if (!modelConfig.options)
       throw Error("autoCreate or autoSync: `options` is required");
 
@@ -157,13 +160,13 @@ export default class ClickhouseOrm {
   }
 
   async createAndSync(
-    modelConfig: ModelSyncTableParams | ModelSqlCreateTableParams,
+    modelConfig: ModelSyncTableConfig | ModelSqlCreateTableConfig,
     dbTableName: string
   ) {
     const tablemeta = await this.getTableMeta(dbTableName);
     // Table Exists
     if (tablemeta) {
-      if ((modelConfig as ModelSyncTableParams).autoSync) {
+      if ((modelConfig as ModelSyncTableConfig).autoSync) {
         const diff = this.diffTableMeta(modelConfig.schema, tablemeta);
         if (
           diff.addColumns.length ||
@@ -186,12 +189,12 @@ export default class ClickhouseOrm {
       }
     } else {
       // [IF NOT EXISTS] create table
-      const { createTable } = modelConfig as ModelSqlCreateTableParams;
+      const { createTable } = modelConfig as ModelSqlCreateTableConfig;
       const createSql = createTable
         ? createTable(dbTableName, this.db)
         : this.autoCreateTableSql(
             dbTableName,
-            modelConfig as ModelSyncTableParams
+            modelConfig as ModelSyncTableConfig
           );
       Log(`Create table> ${createSql}`);
       try {
@@ -209,14 +212,14 @@ export default class ClickhouseOrm {
    * The createDatabase must be completed
    */
   async model(
-    modelConfig: ModelParams | ModelSyncTableParams | ModelSqlCreateTableParams
+    modelConfig: ModelConfig | ModelSyncTableConfig | ModelSqlCreateTableConfig
   ) {
     const { tableName, schema } = modelConfig;
     const dbTableName = `${this.db.name}.${tableName}`;
 
     if (
-      (modelConfig as ModelSyncTableParams).autoCreate ||
-      (modelConfig as ModelSqlCreateTableParams).createTable
+      (modelConfig as ModelSyncTableConfig).autoCreate ||
+      (modelConfig as ModelSqlCreateTableConfig).createTable
     )
       await this.createAndSync(modelConfig, dbTableName);
 

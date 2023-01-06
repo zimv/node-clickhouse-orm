@@ -1,6 +1,6 @@
 import { ClickhouseOrm, setLogService } from "../lib";
 
-import { initConfig, modelSqlCreateTableParams } from "../mock/index";
+import { initConfig, modelSqlCreateTableConfig } from "../mock/index";
 
 // integration test
 describe("test whole flow", () => {
@@ -10,7 +10,7 @@ describe("test whole flow", () => {
     orm = ClickhouseOrm(initConfig);
   });
   test("insert data and find success", async () => {
-    const model = await orm.model(modelSqlCreateTableParams);
+    const model = await orm.model(modelSqlCreateTableConfig);
 
     const data = model.build({
       status: 1,

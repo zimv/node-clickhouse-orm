@@ -25,7 +25,7 @@
     "ts-more": "ts-node ./examples/more.ts",
     "ts-cluster": "ts-node ./examples/cluster.ts",
     "ts-datatype": "ts-node ./examples/datatype.ts",
-    "ts-sync": "ts-node ./examples/sync-table.ts",
+    "ts-sync": "ts-node ./examples/syncTable.ts",
     "test": "jest --coverage"
   },
   "dependencies": {

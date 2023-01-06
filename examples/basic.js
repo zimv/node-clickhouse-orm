@@ -1,5 +1,5 @@
 
-const { ClickhouseOrm, DATA_TYPE, setLogService} = require('../dist/lib');
+const { ClickhouseOrm, DATA_TYPE, setLogService} = require('../dist');
 
 /**
  * defined Schema 

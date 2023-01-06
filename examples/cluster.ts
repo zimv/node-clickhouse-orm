@@ -1,11 +1,11 @@
-import { ClickhouseOrm, DATA_TYPE, ModelSqlCreateTableParams } from "../lib/index";
+import { ClickhouseOrm, DATA_TYPE, ModelSqlCreateTableConfig } from "../lib/index";
 import { clientConfig } from "../mock";
 import * as colors from "colors/safe";
 
 /**
  * defined Schema
  */
-const table1Schema: ModelSqlCreateTableParams = {
+const table1Schema: ModelSqlCreateTableConfig = {
   tableName: "table1",
   schema: {
     time: { type: DATA_TYPE.DateTime, default: Date },
