@@ -41,6 +41,11 @@ const chOrm = ClickhouseOrm({
   db,
   debug: true,
 });
+const chOrm2 = ClickhouseOrm({
+  client: clientConfig,
+  db,
+  debug: true,
+});
 
 const doDemo = async () => {
   // create database 'orm_test'
@@ -52,7 +57,7 @@ const doDemo = async () => {
   // create new table
   await chOrm.model(newModelSyncTableConfig);
   // update table
-  await chOrm.model(updateModelSyncTableConfig);
+  await chOrm2.model(updateModelSyncTableConfig);
 };
 
 doDemo();

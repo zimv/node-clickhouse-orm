@@ -1,7 +1,11 @@
 import { ClickhouseOrm } from "../lib";
 import Model from "../lib/model";
 import * as Log from "../lib/log";
-import { initConfig, modelSqlCreateTableConfig } from "../mock/index";
+import {
+  initConfig,
+  modelSqlCreateTableConfig,
+  modelSyncTableConfig1,
+} from "../mock/index";
 
 jest.mock("../lib/log");
 
@@ -26,6 +30,14 @@ describe("Orm can work normal", () => {
     const model = await orm.model(modelSqlCreateTableConfig);
 
     expect(model).toBeInstanceOf(Model);
+  });
+
+  test("Model create once", async () => {
+    const model = await orm.model(modelSyncTableConfig1);
+
+    const modelAgain = await orm.model(modelSyncTableConfig1);
+
+    expect(model === modelAgain).toBe(true);
   });
 });
 
