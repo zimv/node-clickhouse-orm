@@ -9,6 +9,7 @@ const tableSchema: ModelSyncTableConfig = {
   schema: {
     time: { type: DATA_TYPE.DateTime, default: Date },
     int32: { type: DATA_TYPE.Int32 },
+    int64: { type: DATA_TYPE.Int64 },
     string: { type: DATA_TYPE.String },
     fixedString: { type: DATA_TYPE.FixedString(3) },
     lowStr: { type: DATA_TYPE.LowCardinality(DATA_TYPE.String) },

@@ -12,15 +12,19 @@ export interface I_DATA_TYPES {
   UInt8: DATA_TYPE_DEFINE;
   UInt16: DATA_TYPE_DEFINE;
   UInt32: DATA_TYPE_DEFINE;
+  /**
+   *
+   * @description be careful of Number.MAX_SAFE_INTEGER
+   */
   UInt64: DATA_TYPE_DEFINE;
-  UInt128: DATA_TYPE_DEFINE;
-  UInt256: DATA_TYPE_DEFINE;
   Int8: DATA_TYPE_DEFINE;
   Int16: DATA_TYPE_DEFINE;
   Int32: DATA_TYPE_DEFINE;
+  /**
+   *
+   * @description be careful of Number.MAX_SAFE_INTEGER
+   */
   Int64: DATA_TYPE_DEFINE;
-  Int128: DATA_TYPE_DEFINE;
-  Int256: DATA_TYPE_DEFINE;
   Float32: DATA_TYPE_DEFINE;
   Float64: DATA_TYPE_DEFINE;
   Boolean: DATA_TYPE_DEFINE;
@@ -83,14 +87,6 @@ export const DATA_TYPE: I_DATA_TYPES = {
     validation: dataTypeValidation.UInt64,
     columnType: "UInt64",
   },
-  UInt128: {
-    validation: dataTypeValidation.UInt128,
-    columnType: "UInt128",
-  },
-  UInt256: {
-    validation: dataTypeValidation.UInt256,
-    columnType: "UInt256",
-  },
   Int8: {
     validation: dataTypeValidation.Int8,
     columnType: "Int8",
@@ -106,14 +102,6 @@ export const DATA_TYPE: I_DATA_TYPES = {
   Int64: {
     validation: dataTypeValidation.Int64,
     columnType: "Int64",
-  },
-  Int128: {
-    validation: dataTypeValidation.Int128,
-    columnType: "Int128",
-  },
-  Int256: {
-    validation: dataTypeValidation.Int256,
-    columnType: "Int256",
   },
   Float32: {
     validation: dataTypeValidation.Float32,

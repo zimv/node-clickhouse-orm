@@ -264,14 +264,10 @@ Clickhouse data type. Most of the following data will be validated by ORM, but o
   UInt16;
   UInt32;
   UInt64;
-  UInt128;
-  UInt256;
   Int8;
   Int16;
   Int32;
   Int64;
-  Int128;
-  Int256;
   Float32;
   Float64;
   Boolean;
