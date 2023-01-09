@@ -209,21 +209,13 @@ export default class ClickhouseOrm {
 
   /**
    * @remark
-   * The createDatabase must be completed. 
-   * @description
-   * The same table can only have one model instance:
-   * { if (this.models[tableName]) return this.models[tableName] } 
+   * The createDatabase must be completed
    */
   async model(
     modelConfig: ModelConfig | ModelSyncTableConfig | ModelSqlCreateTableConfig
   ) {
     const { tableName, schema } = modelConfig;
     const dbTableName = `${this.db.name}.${tableName}`;
-
-    /**
-     * The same table can only have one model instance
-     */
-    if (this.models[tableName]) return this.models[tableName];
 
     if (
       (modelConfig as ModelSyncTableConfig).autoCreate ||

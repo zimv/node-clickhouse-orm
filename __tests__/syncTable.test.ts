@@ -27,21 +27,19 @@ describe("Sync table test", () => {
   });
 
   test("sync table `autoCreateTableSql()` and `syncTable()`", async () => {
-    const ormInstance2 = ClickhouseOrm(initConfig);
     const autoCreateTableSqlMock = jest.spyOn(orm, "autoCreateTableSql");
-    const syncTableMock = jest.spyOn(ormInstance2, "syncTable");
+    const syncTableMock = jest.spyOn(orm, "syncTable");
     await orm.model(modelSyncTableConfig1);
-    await ormInstance2.model(modelSyncTableConfig2);
+    await orm.model(modelSyncTableConfig2);
     expect(autoCreateTableSqlMock).toHaveBeenCalled();
     expect(syncTableMock).toHaveBeenCalled();
   });
 
   test("not sync table", async () => {
-    const ormInstance2 = ClickhouseOrm(initConfig);
     const autoCreateTableSqlMock = jest.spyOn(orm2, "autoCreateTableSql");
-    const syncTableMock = jest.spyOn(ormInstance2, "syncTable");
+    const syncTableMock = jest.spyOn(orm2, "syncTable");
     await orm2.model(modelSyncTableConfig3);
-    await ormInstance2.model(modelSyncTableConfig3);
+    await orm2.model(modelSyncTableConfig3);
     expect(autoCreateTableSqlMock).toHaveBeenCalled();
     expect(syncTableMock).not.toHaveBeenCalled();
   });
