@@ -46,14 +46,14 @@ export interface I_DATA_TYPES {
    *
    * @param string
    * @example DATA_TYPE.Enum8(`'hello' = 1, 'world' = 2`)
-   * @desc number [-128, 127]
+   * @description number [-128, 127]
    */
   Enum8: DATA_TYPE_FUNCTION_DEFINE;
   /**
    *
    * @param string
    * @example DATA_TYPE.Enum16(`'hello' = 3000, 'world' = 3500`)
-   * @desc number [-32768, 32767]
+   * @description number [-32768, 32767]
    */
   Enum16: DATA_TYPE_FUNCTION_DEFINE;
   /**
@@ -61,7 +61,7 @@ export interface I_DATA_TYPES {
    * @param columnType
    * Clickhouse dataTypes: Array(T), JSON, Map(key, value), IPv4, Nullable(), more...
    * @example DATA_TYPE.Other('Array(String)') , DATA_TYPE.Other('Int8')
-   * @desc No `INSERT` data validation provided
+   * @description No `INSERT` data validation provided
    */
   Other: DATA_TYPE_FUNCTION_DEFINE;
 }

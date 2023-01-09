@@ -58,12 +58,12 @@ const xxxSchema: ModelSqlCreateTableConfig = {
     time: { type: DATA_TYPE.DateTime, default: Date },
     status: { type: DATA_TYPE.Int32 },
     browser: { type: DATA_TYPE.String },
-    browser_v: {},
+    browser_v: { type: DATA_TYPE.String },
   },
 };
 ```
 ----
-* ModelSyncTableConfig
+* ModelSyncTableConfig **(Recommended)**
 
 支持自动创建表和自动同步表字段结构
 
@@ -133,8 +133,8 @@ const xxxSchema: ModelSqlCreateTableConfig = {
   schema: {
     time: { type: DATA_TYPE.DateTime, default: Date },
     status: { type: DATA_TYPE.Int32 },
-    browser: { type: DATA_TYPE.String },
-    browser_v: {},
+    browser: { type: DATA_TYPE.LowCardinality(DATA_TYPE.String) },
+    browser_v: { type: DATA_TYPE.String  },
   },
   // create table sql
   createTable: (dbTableName) => {

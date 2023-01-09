@@ -56,13 +56,13 @@ const xxxSchema: ModelSqlCreateTableConfig = {
   schema: {
     time: { type: DATA_TYPE.DateTime, default: Date },
     status: { type: DATA_TYPE.Int32 },
-    browser: { type: DATA_TYPE.String },
-    browser_v: {},
+    browser: { type: DATA_TYPE.LowCardinality(DATA_TYPE.String) },
+    browser_v: { type: DATA_TYPE.String  }
   },
 };
 ```
 ----
-* ModelSyncTableConfig
+* ModelSyncTableConfig **(Recommended)**
 
 Automatically create tables and automatically synchronize table field structures
 
@@ -131,8 +131,8 @@ const xxxSchema: ModelSqlCreateTableConfig = {
   schema: {
     time: { type: DATA_TYPE.DateTime, default: Date },
     status: { type: DATA_TYPE.Int32 },
-    browser: { type: DATA_TYPE.String },
-    browser_v: {},
+    browser: { type: DATA_TYPE.LowCardinality(DATA_TYPE.String) },
+    browser_v: { type: DATA_TYPE.String  }
   },
   // create table sql
   createTable: (dbTableName) => {
