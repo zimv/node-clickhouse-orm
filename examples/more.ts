@@ -1,32 +1,27 @@
 import * as dayjs from "dayjs";
-import { ClickhouseOrm, DATA_TYPE, ModelSqlCreateTableConfig } from "../lib/index";
+import {
+  ClickhouseOrm,
+  DATA_TYPE,
+  ModelSyncTableConfig,
+} from "../lib/index";
 import { clientConfig } from "../mock";
 
 /**
  * defined Model
  */
-const table1Schema: ModelSqlCreateTableConfig = {
+const table1Schema: ModelSyncTableConfig = {
   tableName: "table1",
   schema: {
     time: { type: DATA_TYPE.DateTime, default: Date },
     status: { type: DATA_TYPE.Int32 },
-    browser: { type: DATA_TYPE.String },
+    browser: { type: DATA_TYPE.LowCardinality(DATA_TYPE.String) },
     browser_v: { type: DATA_TYPE.String },
   },
-  createTable: (dbTableName) => {
-    // dbTableName = db + '.' + tableName = (orm_test.table1)
-    return `
-      CREATE TABLE IF NOT EXISTS ${dbTableName}
-      (
-        time DateTime,
-        status Int32,
-        browser LowCardinality(String),
-        browser_v String
-      )
-      ENGINE = MergeTree
-      PARTITION BY toYYYYMM(time)
-      ORDER BY time`;
-  },
+  options: `ENGINE = MergeTree
+  PARTITION BY toYYYYMM(time)
+  ORDER BY time`,
+  autoCreate: true,
+  autoSync: true,
 };
 
 /**

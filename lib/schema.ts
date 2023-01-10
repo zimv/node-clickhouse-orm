@@ -5,7 +5,7 @@ import { ErrorLog } from "./log";
 
 export interface SchemaConfig {
   [key: string]: {
-    type?: DATA_TYPE_DEFINE;
+    type: DATA_TYPE_DEFINE;
     default?: any;
   };
 }

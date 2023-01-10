@@ -56,13 +56,13 @@ const xxxSchema: ModelSqlCreateTableConfig = {
   schema: {
     time: { type: DATA_TYPE.DateTime, default: Date },
     status: { type: DATA_TYPE.Int32 },
-    browser: { type: DATA_TYPE.String },
-    browser_v: {},
+    browser: { type: DATA_TYPE.LowCardinality(DATA_TYPE.String) },
+    browser_v: { type: DATA_TYPE.String  }
   },
 };
 ```
 ----
-* ModelSyncTableConfig
+* ModelSyncTableConfig **(Recommended)**
 
 Automatically create tables and automatically synchronize table field structures
 
@@ -131,8 +131,8 @@ const xxxSchema: ModelSqlCreateTableConfig = {
   schema: {
     time: { type: DATA_TYPE.DateTime, default: Date },
     status: { type: DATA_TYPE.Int32 },
-    browser: { type: DATA_TYPE.String },
-    browser_v: {},
+    browser: { type: DATA_TYPE.LowCardinality(DATA_TYPE.String) },
+    browser_v: { type: DATA_TYPE.String  }
   },
   // create table sql
   createTable: (dbTableName) => {
@@ -230,7 +230,7 @@ doDemo();
 |  | required | type | description |
 | ------ | ------ | ------ | ------ |
 | tableName | true | string | It is the table name. |
-| schema | true | { [column]: { type?, default? } } | `Type` defines the data type, and `default` sets the default value |
+| schema | true | { [column]: { type, default? } } | `Type` defines the data type, and `default` sets the default value |
 
 ----
 * ModelSyncTableConfig
@@ -238,7 +238,7 @@ doDemo();
 |  | required | type | description |
 | ------ | ------ | ------ | ------ |
 | tableName | true | string | It is the table name. |
-| schema | true | { [column]: { type?, default? } } | `Type` defines the data type, and `default` sets the default value |
+| schema | true | { [column]: { type, default? } } | `Type` defines the data type, and `default` sets the default value |
 | options | true | string | Create table setting |
 | autoCreate | true | boolean | Auto create table |
 | autoSync | false | boolean | Auto sync table structure`(Careful use)` |
@@ -264,14 +264,10 @@ Clickhouse data type. Most of the following data will be validated by ORM, but o
   UInt16;
   UInt32;
   UInt64;
-  UInt128;
-  UInt256;
   Int8;
   Int16;
   Int32;
   Int64;
-  Int128;
-  Int256;
   Float32;
   Float64;
   Boolean;
@@ -299,7 +295,7 @@ Clickhouse data type. Most of the following data will be validated by ORM, but o
    * @example DATA_TYPE.Enum8(`'hello' = 1, 'world' = 2`)
    * @desc number [-128, 127]
    */
-  Enum8:;
+  Enum8;
   /**
    *
    * @param string

@@ -1,11 +1,11 @@
-import { ClickhouseOrm, DATA_TYPE, ModelSqlCreateTableConfig } from "../lib/index";
+import { ClickhouseOrm, DATA_TYPE, ModelSyncTableConfig } from "../lib/index";
 import { clientConfig } from "../mock";
 import * as colors from "colors/safe";
 
 /**
  * defined Model
  */
-const table1Schema: ModelSqlCreateTableConfig = {
+const table1Schema: ModelSyncTableConfig = {
   tableName: "table1",
   schema: {
     time: { type: DATA_TYPE.DateTime, default: Date },
@@ -13,20 +13,11 @@ const table1Schema: ModelSqlCreateTableConfig = {
     browser: { type: DATA_TYPE.String },
     browser_v: { type: DATA_TYPE.String },
   },
-  createTable: (dbTableName, db) => {
-    // dbTableName = db + '.' + tableName = (orm_test.table1)
-    return `
-      CREATE TABLE IF NOT EXISTS ${dbTableName} ON CLUSTER ${db.cluster}
-      (
-        time DateTime,
-        status Int32,
-        browser LowCardinality(String),
-        browser_v String
-      )
-      ENGINE = MergeTree
-      PARTITION BY toYYYYMM(time)
-      ORDER BY time`;
-  },
+  autoCreate: true,
+  options: `ENGINE = MergeTree
+  PARTITION BY toYYYYMM(time)
+  ORDER BY time`,
+  autoSync: true,
 };
 
 /**

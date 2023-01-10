@@ -58,12 +58,12 @@ const xxxSchema: ModelSqlCreateTableConfig = {
     time: { type: DATA_TYPE.DateTime, default: Date },
     status: { type: DATA_TYPE.Int32 },
     browser: { type: DATA_TYPE.String },
-    browser_v: {},
+    browser_v: { type: DATA_TYPE.String },
   },
 };
 ```
 ----
-* ModelSyncTableConfig
+* ModelSyncTableConfig **(Recommended)**
 
 支持自动创建表和自动同步表字段结构
 
@@ -133,8 +133,8 @@ const xxxSchema: ModelSqlCreateTableConfig = {
   schema: {
     time: { type: DATA_TYPE.DateTime, default: Date },
     status: { type: DATA_TYPE.Int32 },
-    browser: { type: DATA_TYPE.String },
-    browser_v: {},
+    browser: { type: DATA_TYPE.LowCardinality(DATA_TYPE.String) },
+    browser_v: { type: DATA_TYPE.String  },
   },
   // create table sql
   createTable: (dbTableName) => {
@@ -232,7 +232,7 @@ doDemo();
 |  | 是否必选项 | 类型 | 描述 |
 | ------ | ------ | ------ | ------ |
 | tableName | true | string | 表名 |
-| schema | true | { [column]: { type?, default? } } | `type`定义数据类型, `default` 设置默认值|
+| schema | true | { [column]: { type, default? } } | `type`定义数据类型, `default` 设置默认值|
 
 ----
 * ModelSyncTableConfig
@@ -240,7 +240,7 @@ doDemo();
 |  | 是否必选项 | 类型 | 描述 |
 | ------ | ------ | ------ | ------ |
 | tableName | true | string | 表名 |
-| schema | true | { [column]: { type?, default? } } | `type`定义数据类型, `default` 设置默认值|
+| schema | true | { [column]: { type, default? } } | `type`定义数据类型, `default` 设置默认值|
 | options | true | string | 建表的其他配置 |
 | autoCreate | true | boolean | 是否自动建表 |
 | autoSync | false | boolean | 是否自动同步表结构`（谨慎使用）` |
@@ -267,14 +267,10 @@ clickhouse数据类型. 下面大部分数据 **ORM** 会验证，但也仅验�
   UInt16;
   UInt32;
   UInt64;
-  UInt128;
-  UInt256;
   Int8;
   Int16;
   Int32;
   Int64;
-  Int128;
-  Int256;
   Float32;
   Float64;
   Boolean;
@@ -302,7 +298,7 @@ clickhouse数据类型. 下面大部分数据 **ORM** 会验证，但也仅验�
    * @example DATA_TYPE.Enum8(`'hello' = 1, 'world' = 2`)
    * @desc number [-128, 127]
    */
-  Enum8:;
+  Enum8;
   /**
    *
    * @param string

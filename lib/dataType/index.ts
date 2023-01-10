@@ -12,15 +12,19 @@ export interface I_DATA_TYPES {
   UInt8: DATA_TYPE_DEFINE;
   UInt16: DATA_TYPE_DEFINE;
   UInt32: DATA_TYPE_DEFINE;
+  /**
+   *
+   * @description be careful of Number.MAX_SAFE_INTEGER
+   */
   UInt64: DATA_TYPE_DEFINE;
-  UInt128: DATA_TYPE_DEFINE;
-  UInt256: DATA_TYPE_DEFINE;
   Int8: DATA_TYPE_DEFINE;
   Int16: DATA_TYPE_DEFINE;
   Int32: DATA_TYPE_DEFINE;
+  /**
+   *
+   * @description be careful of Number.MAX_SAFE_INTEGER
+   */
   Int64: DATA_TYPE_DEFINE;
-  Int128: DATA_TYPE_DEFINE;
-  Int256: DATA_TYPE_DEFINE;
   Float32: DATA_TYPE_DEFINE;
   Float64: DATA_TYPE_DEFINE;
   Boolean: DATA_TYPE_DEFINE;
@@ -46,14 +50,16 @@ export interface I_DATA_TYPES {
    *
    * @param string
    * @example DATA_TYPE.Enum8(`'hello' = 1, 'world' = 2`)
-   * @desc number [-128, 127]
+   * @description number [-128, 127]
+   * @description Don't just change the enumeration order, because the orm will think that the field structure has changed
    */
   Enum8: DATA_TYPE_FUNCTION_DEFINE;
   /**
    *
    * @param string
    * @example DATA_TYPE.Enum16(`'hello' = 3000, 'world' = 3500`)
-   * @desc number [-32768, 32767]
+   * @description number [-32768, 32767]
+   * @description Don't just change the enumeration order, because the orm will think that the field structure has changed
    */
   Enum16: DATA_TYPE_FUNCTION_DEFINE;
   /**
@@ -61,7 +67,7 @@ export interface I_DATA_TYPES {
    * @param columnType
    * Clickhouse dataTypes: Array(T), JSON, Map(key, value), IPv4, Nullable(), more...
    * @example DATA_TYPE.Other('Array(String)') , DATA_TYPE.Other('Int8')
-   * @desc No `INSERT` data validation provided
+   * @description No `INSERT` data validation provided
    */
   Other: DATA_TYPE_FUNCTION_DEFINE;
 }
@@ -83,14 +89,6 @@ export const DATA_TYPE: I_DATA_TYPES = {
     validation: dataTypeValidation.UInt64,
     columnType: "UInt64",
   },
-  UInt128: {
-    validation: dataTypeValidation.UInt128,
-    columnType: "UInt128",
-  },
-  UInt256: {
-    validation: dataTypeValidation.UInt256,
-    columnType: "UInt256",
-  },
   Int8: {
     validation: dataTypeValidation.Int8,
     columnType: "Int8",
@@ -106,14 +104,6 @@ export const DATA_TYPE: I_DATA_TYPES = {
   Int64: {
     validation: dataTypeValidation.Int64,
     columnType: "Int64",
-  },
-  Int128: {
-    validation: dataTypeValidation.Int128,
-    columnType: "Int128",
-  },
-  Int256: {
-    validation: dataTypeValidation.Int256,
-    columnType: "Int256",
   },
   Float32: {
     validation: dataTypeValidation.Float32,
