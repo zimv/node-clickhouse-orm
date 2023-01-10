@@ -51,6 +51,7 @@ export interface I_DATA_TYPES {
    * @param string
    * @example DATA_TYPE.Enum8(`'hello' = 1, 'world' = 2`)
    * @description number [-128, 127]
+   * @description Don't just change the enumeration order, because the orm will think that the field structure has changed
    */
   Enum8: DATA_TYPE_FUNCTION_DEFINE;
   /**
@@ -58,6 +59,7 @@ export interface I_DATA_TYPES {
    * @param string
    * @example DATA_TYPE.Enum16(`'hello' = 3000, 'world' = 3500`)
    * @description number [-32768, 32767]
+   * @description Don't just change the enumeration order, because the orm will think that the field structure has changed
    */
   Enum16: DATA_TYPE_FUNCTION_DEFINE;
   /**

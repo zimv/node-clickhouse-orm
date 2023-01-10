@@ -232,7 +232,7 @@ doDemo();
 |  | 是否必选项 | 类型 | 描述 |
 | ------ | ------ | ------ | ------ |
 | tableName | true | string | 表名 |
-| schema | true | { [column]: { type?, default? } } | `type`定义数据类型, `default` 设置默认值|
+| schema | true | { [column]: { type, default? } } | `type`定义数据类型, `default` 设置默认值|
 
 ----
 * ModelSyncTableConfig
@@ -240,7 +240,7 @@ doDemo();
 |  | 是否必选项 | 类型 | 描述 |
 | ------ | ------ | ------ | ------ |
 | tableName | true | string | 表名 |
-| schema | true | { [column]: { type?, default? } } | `type`定义数据类型, `default` 设置默认值|
+| schema | true | { [column]: { type, default? } } | `type`定义数据类型, `default` 设置默认值|
 | options | true | string | 建表的其他配置 |
 | autoCreate | true | boolean | 是否自动建表 |
 | autoSync | false | boolean | 是否自动同步表结构`（谨慎使用）` |
@@ -298,7 +298,7 @@ clickhouse数据类型. 下面大部分数据 **ORM** 会验证，但也仅验�
    * @example DATA_TYPE.Enum8(`'hello' = 1, 'world' = 2`)
    * @desc number [-128, 127]
    */
-  Enum8:;
+  Enum8;
   /**
    *
    * @param string

@@ -230,7 +230,7 @@ doDemo();
 |  | required | type | description |
 | ------ | ------ | ------ | ------ |
 | tableName | true | string | It is the table name. |
-| schema | true | { [column]: { type?, default? } } | `Type` defines the data type, and `default` sets the default value |
+| schema | true | { [column]: { type, default? } } | `Type` defines the data type, and `default` sets the default value |
 
 ----
 * ModelSyncTableConfig
@@ -238,7 +238,7 @@ doDemo();
 |  | required | type | description |
 | ------ | ------ | ------ | ------ |
 | tableName | true | string | It is the table name. |
-| schema | true | { [column]: { type?, default? } } | `Type` defines the data type, and `default` sets the default value |
+| schema | true | { [column]: { type, default? } } | `Type` defines the data type, and `default` sets the default value |
 | options | true | string | Create table setting |
 | autoCreate | true | boolean | Auto create table |
 | autoSync | false | boolean | Auto sync table structure`(Careful use)` |
@@ -295,7 +295,7 @@ Clickhouse data type. Most of the following data will be validated by ORM, but o
    * @example DATA_TYPE.Enum8(`'hello' = 1, 'world' = 2`)
    * @desc number [-128, 127]
    */
-  Enum8:;
+  Enum8;
   /**
    *
    * @param string
