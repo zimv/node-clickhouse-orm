@@ -23,7 +23,7 @@ npm i clickhouse-orm
 **创建ORM实例：**
 
 ```typescript
-const { ClickhouseOrm, DATA_TYPE, setLogService } = require("clickhouse-orm");
+const { ClickhouseOrm } = require("clickhouse-orm");
 
 const chOrm = ClickhouseOrm({
   db: {
@@ -45,12 +45,88 @@ const chOrm = ClickhouseOrm({
 ```
 
 **定义数据模型：**
-* ModelConfig
+```typescript
+import { DATA_TYPE, ModelSyncTableConfig } from 'clickhouse-orm';
+const oldSchema: ModelSyncTableConfig = {
+  tableName: "xxx",
+  schema: {
+    time: { type: DATA_TYPE.DateTime, default: Date },
+    will_typeChanged: { type: DATA_TYPE.Int16 },
+    will_deleted: { type: DATA_TYPE.String },
+  },
+  options: `ENGINE = MergeTree
+  PARTITION BY toYYYYMM(time)
+  ORDER BY time`,
+  autoCreate: true,
+  autoSync: true,
+};
+```
+
+**创建数据和查询：**
+
+```typescript
+// create database 'orm_test'
+await chOrm.createDatabase();
+// register schema and create [if] table
+const Table1Model = await chOrm.model(table1Schema);
+
+// create data
+const resCreate = await Table1Model.create({
+  status: 1,
+  time: new Date(),
+  browser: "chrome",
+  browser_v: "90.0.1.21",
+});
+console.log("create:", resCreate);
+
+// find
+Table1Model.find({
+  select: "*",
+  limit: 3,
+}).then((res) => {
+  // SQL: SELECT * from orm_test.table1 LIMIT 3
+  console.log("find:", res);
+});
+```
+
+**详情参考 [Basic Example](https://github.com/zimv/node-clickhouse-orm/blob/main/examples/basic.js).**
+
+# 文档
+
+`注意`: **'?'** 代表可选项
+
+### ClickhouseOrm
+
+
+
+`db` : object<{name:string, engine?:string, cluster?:string}>
+
+> name: 数据库名称
+
+> engine?: 数据库引擎
+
+> cluster?: 集群名称
+
+`debug` : boolean
+
+> Default: false
+
+`client` : object
+
+> 客户端驱动配置. 详情请看 [TimonKK/clickhouse](https://github.com/TimonKK/clickhouse).
+
+### Model模型参数配置
+**1. ModelConfig**
+
+|  | 是否必选项 | 类型 | 描述 |
+| ------ | ------ | ------ | ------ |
+| tableName | true | string | 表名 |
+| schema | true | { [column]: { type, default? } } | `type`定义数据类型, `default` 设置默认值|
 
 ```typescript
 
-import { DATA_TYPE, ModelSqlCreateTableConfig } from 'clickhouse-orm';
-const xxxSchema: ModelSqlCreateTableConfig = {
+import { DATA_TYPE, ModelConfig } from 'clickhouse-orm';
+const xxxSchema: ModelConfig = {
   // table name
   tableName: "xxx",
   // define column name
@@ -62,8 +138,18 @@ const xxxSchema: ModelSqlCreateTableConfig = {
   },
 };
 ```
+
 ----
-* ModelSyncTableConfig **(Recommended)**
+**2. ModelSyncTableConfig** （推荐）
+
+|  | 是否必选项 | 类型 | 描述 |
+| ------ | ------ | ------ | ------ |
+| tableName | true | string | 表名 |
+| schema | true | { [column]: { type, default? } } | `type`定义数据类型, `default` 设置默认值|
+| options | true | string | 建表的其他配置 |
+| autoCreate | true | boolean | 是否自动建表 |
+| autoSync | false | boolean | 是否自动同步表结构`（谨慎使用）` |
+
 
 支持自动创建表和自动同步表字段结构
 
@@ -119,7 +205,14 @@ newSchema = {
 **详情参考 [SyncTable Example](https://github.com/zimv/node-clickhouse-orm/blob/main/examples/syncTable.ts).**
 
 ----
-* ModelSqlCreateTableConfig
+**3. ModelSqlCreateTableConfig**
+
+|  | 是否必选项 | 类型 | 描述 |
+| ------ | ------ | ------ | ------ |
+| tableName | true | string | 表名 |
+| schema | true | { [column]: { type, default? } } | `type`定义数据类型, `default` 设置默认值|
+| createTable | true | string | 自动建表的 **SQL** 语句，模型创建时会执行. 建议使用 **'IF NOT EXISTS'** 避免报错. <br> 注意 !!! >>>>> 如果表结构要变动，此配置不会同步，你需要使用其他客户端（比如终端连接数据库）去执行改表语句。最后再回来修改代码|
+
 
 自定义建表语句，模型创建会自动创建表
 
@@ -153,108 +246,6 @@ const xxxSchema: ModelSqlCreateTableConfig = {
   },
 };
 ```
-**create / build + save / find：**
-
-```javascript
-const doDemo = async () => {
-  // create database 'orm_test'
-  // SQL: CREATE DATABASE IF NOT EXISTS orm_test
-  await chOrm.createDatabase();
-
-  // register schema and create [if] table
-  // createTable() SQL: CREATE TABLE IF NOT EXISTS orm_test.table1...
-  const Table1Model = await chOrm.model(table1Schema);
-
-  // new data model
-  const data = Table1Model.build({ status: 2 });
-
-  // set value
-  data.time = new Date();
-  data.browser = "chrome";
-  data.browser_v = "90.0.1.21";
-
-  // do save
-  const res = await data.save();
-  // SQL: INSERT INTO orm_test.table1 (time,status,browser,browser_v) [{"time":"2022-02-05T07:51:16.919Z","status":2,"browser":"chrome","browser_v":"90.0.1.21"}]
-  console.log("save:", res);
-
-  // create === build + save
-  const resCreate = await Table1Model.create({
-    status: 1,
-    time: new Date(),
-    browser: "chrome",
-    browser_v: "90.0.1.21",
-  });
-  console.log("create:", resCreate);
-
-  // do find
-  Table1Model.find({
-    select: "*",
-    limit: 3,
-  }).then((res) => {
-    // SQL: SELECT * from orm_test.table1    LIMIT 3
-    console.log("find:", res);
-  });
-};
-
-doDemo();
-```
-
-**详情参考 [Basic Example](https://github.com/zimv/node-clickhouse-orm/blob/main/examples/basic.js).**
-
-# 文档
-
-`注意`: **'?'** 代表可选项
-
-### ClickhouseOrm
-
-
-
-`db` : object<{name:string, engine?:string, cluster?:string}>
-
-> name: 数据库名称
-
-> engine?: 数据库引擎
-
-> cluster?: 集群名称
-
-`debug` : boolean
-
-> Default: false
-
-`client` : object
-
-> 客户端驱动配置. 详情请看 [TimonKK/clickhouse](https://github.com/TimonKK/clickhouse).
-
-### Model模型参数配置
-* ModelConfig
-
-|  | 是否必选项 | 类型 | 描述 |
-| ------ | ------ | ------ | ------ |
-| tableName | true | string | 表名 |
-| schema | true | { [column]: { type, default? } } | `type`定义数据类型, `default` 设置默认值|
-
-----
-* ModelSyncTableConfig
-
-|  | 是否必选项 | 类型 | 描述 |
-| ------ | ------ | ------ | ------ |
-| tableName | true | string | 表名 |
-| schema | true | { [column]: { type, default? } } | `type`定义数据类型, `default` 设置默认值|
-| options | true | string | 建表的其他配置 |
-| autoCreate | true | boolean | 是否自动建表 |
-| autoSync | false | boolean | 是否自动同步表结构`（谨慎使用）` |
-
-
-----
-* ModelSqlCreateTableConfig
-
-|  | 是否必选项 | 类型 | 描述 |
-| ------ | ------ | ------ | ------ |
-| tableName | true | string | 表名 |
-| schema | true | { [column]: { type, default? } } | `type`定义数据类型, `default` 设置默认值|
-| createTable | true | string | 自动建表的 **SQL** 语句，模型创建时会执行. 建议使用 **'IF NOT EXISTS'** 避免报错. <br> 注意 !!! >>>>> 如果表结构要变动，此配置不会同步，你需要使用其他客户端（比如终端连接数据库）去执行改表语句。最后再回来修改代码|
-
 
 
 ### 数据类型

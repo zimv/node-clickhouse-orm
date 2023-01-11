@@ -23,7 +23,7 @@ npm i clickhouse-orm
 **Create instance：**
 
 ```typescript
-const { ClickhouseOrm, DATA_TYPE, setLogService } = require("clickhouse-orm");
+const { ClickhouseOrm } = require("clickhouse-orm");
 
 const chOrm = ClickhouseOrm({
   db: {
@@ -45,11 +45,87 @@ const chOrm = ClickhouseOrm({
 ```
 
 **Define Model：**
-* ModelConfig
+```typescript
+import { DATA_TYPE, ModelSyncTableConfig } from 'clickhouse-orm';
+const oldSchema: ModelSyncTableConfig = {
+  tableName: "xxx",
+  schema: {
+    time: { type: DATA_TYPE.DateTime, default: Date },
+    will_typeChanged: { type: DATA_TYPE.Int16 },
+    will_deleted: { type: DATA_TYPE.String },
+  },
+  options: `ENGINE = MergeTree
+  PARTITION BY toYYYYMM(time)
+  ORDER BY time`,
+  autoCreate: true,
+  autoSync: true,
+};
+```
+
+**Create data / Find：**
 
 ```typescript
-import { DATA_TYPE, ModelSqlCreateTableConfig } from 'clickhouse-orm';
-const xxxSchema: ModelSqlCreateTableConfig = {
+// create database 'orm_test'
+await chOrm.createDatabase();
+// register schema and create [if] table
+const Table1Model = await chOrm.model(table1Schema);
+
+// create data
+const resCreate = await Table1Model.create({
+  status: 1,
+  time: new Date(),
+  browser: "chrome",
+  browser_v: "90.0.1.21",
+});
+console.log("create:", resCreate);
+
+// find
+Table1Model.find({
+  select: "*",
+  limit: 3,
+}).then((res) => {
+  // SQL: SELECT * from orm_test.table1 LIMIT 3
+  console.log("find:", res);
+});
+```
+
+**More in [Basic Example](https://github.com/zimv/node-clickhouse-orm/blob/main/examples/basic.js).**
+
+# Document
+
+`Note`: '?' is a Optional
+
+### ClickhouseOrm
+
+
+
+`db` : object<{name:string, engine?:string, cluster?:string}>
+
+> name: database name
+
+> engine?: database engine
+
+> cluster?: cluster name
+
+`debug` : boolean
+
+> Default: false
+
+`client` : object
+
+> Drive configuration. More in [TimonKK/clickhouse](https://github.com/TimonKK/clickhouse).
+
+### Model config params
+**1. ModelConfig**
+
+|  | required | type | description |
+| ------ | ------ | ------ | ------ |
+| tableName | true | string | It is the table name. |
+| schema | true | { [column]: { type, default? } } | `Type` defines the data type, and `default` sets the default value |
+
+```typescript
+import { DATA_TYPE, ModelConfig } from 'clickhouse-orm';
+const xxxSchema: ModelConfig = {
   // table name
   tableName: "xxx",
   // define column name
@@ -62,7 +138,18 @@ const xxxSchema: ModelSqlCreateTableConfig = {
 };
 ```
 ----
-* ModelSyncTableConfig **(Recommended)**
+
+
+**2. ModelSyncTableConfig** (Recommended)
+
+|  | required | type | description |
+| ------ | ------ | ------ | ------ |
+| tableName | true | string | It is the table name. |
+| schema | true | { [column]: { type, default? } } | `Type` defines the data type, and `default` sets the default value |
+| options | true | string | Create table setting |
+| autoCreate | true | boolean | Auto create table |
+| autoSync | false | boolean | Auto sync table structure`(Careful use)` |
+ 
 
 Automatically create tables and automatically synchronize table field structures
 
@@ -117,12 +204,18 @@ newSchema = {
 **More in [SyncTable Example](https://github.com/zimv/node-clickhouse-orm/blob/main/examples/syncTable.ts).**
 
 ----
-* ModelSqlCreateTableConfig
+**3. ModelSqlCreateTableConfig**
+
+|  | required | type | description |
+| ------ | ------ | ------ | ------ |
+| tableName | true | string | It is the table name. |
+| schema | true | { [column]: { type, default? } } | `Type` defines the data type, and `default` sets the default value |
+| createTable | true | string | It is the SQL for creating tables.When model is executed, this SQL will be executed. It is suggested to add 'IF NOT EXISTS'. <br> Watch out !!! >>>>> If the table already exists and you want to modify it. You need to execute the modification sql through other clients（Such as Remote terminal） and update the code of the Schema!!!|
+
 
 Customized table creation statement, and the table will be created automatically when the model is created
 
 ```typescript
-
 import { DATA_TYPE, ModelSqlCreateTableConfig } from 'clickhouse-orm';
 const xxxSchema: ModelSqlCreateTableConfig = {
   // table name
@@ -151,108 +244,6 @@ const xxxSchema: ModelSqlCreateTableConfig = {
   },
 };
 ```
-**create / build + save / find：**
-
-```javascript
-const doDemo = async () => {
-  // create database 'orm_test'
-  // SQL: CREATE DATABASE IF NOT EXISTS orm_test
-  await chOrm.createDatabase();
-
-  // register schema and create [if] table
-  // createTable() SQL: CREATE TABLE IF NOT EXISTS orm_test.table1...
-  const Table1Model = await chOrm.model(table1Schema);
-
-  // new data model
-  const data = Table1Model.build({ status: 2 });
-
-  // set value
-  data.time = new Date();
-  data.browser = "chrome";
-  data.browser_v = "90.0.1.21";
-
-  // do save
-  const res = await data.save();
-  // SQL: INSERT INTO orm_test.table1 (time,status,browser,browser_v) [{"time":"2022-02-05T07:51:16.919Z","status":2,"browser":"chrome","browser_v":"90.0.1.21"}]
-  console.log("save:", res);
-
-  // create === build + save
-  const resCreate = await Table1Model.create({
-    status: 1,
-    time: new Date(),
-    browser: "chrome",
-    browser_v: "90.0.1.21",
-  });
-  console.log("create:", resCreate);
-
-  // do find
-  Table1Model.find({
-    select: "*",
-    limit: 3,
-  }).then((res) => {
-    // SQL: SELECT * from orm_test.table1    LIMIT 3
-    console.log("find:", res);
-  });
-};
-
-doDemo();
-```
-
-**More in [Basic Example](https://github.com/zimv/node-clickhouse-orm/blob/main/examples/basic.js).**
-
-# Document
-
-`Note`: '?' is a Optional
-
-### ClickhouseOrm
-
-
-
-`db` : object<{name:string, engine?:string, cluster?:string}>
-
-> name: database name
-
-> engine?: database engine
-
-> cluster?: cluster name
-
-`debug` : boolean
-
-> Default: false
-
-`client` : object
-
-> Drive configuration. More in [TimonKK/clickhouse](https://github.com/TimonKK/clickhouse).
-
-### Model config params
-* ModelConfig
-
-|  | required | type | description |
-| ------ | ------ | ------ | ------ |
-| tableName | true | string | It is the table name. |
-| schema | true | { [column]: { type, default? } } | `Type` defines the data type, and `default` sets the default value |
-
-----
-* ModelSyncTableConfig
-
-|  | required | type | description |
-| ------ | ------ | ------ | ------ |
-| tableName | true | string | It is the table name. |
-| schema | true | { [column]: { type, default? } } | `Type` defines the data type, and `default` sets the default value |
-| options | true | string | Create table setting |
-| autoCreate | true | boolean | Auto create table |
-| autoSync | false | boolean | Auto sync table structure`(Careful use)` |
-
-----
-* ModelSqlCreateTableConfig
-
-|  | required | type | description |
-| ------ | ------ | ------ | ------ |
-| tableName | true | string | It is the table name. |
-| schema | true | { [column]: { type, default? } } | `Type` defines the data type, and `default` sets the default value |
-| createTable | true | string | It is the SQL for creating tables.When model is executed, this SQL will be executed. It is suggested to add 'IF NOT EXISTS'. <br> Watch out !!! >>>>> If the table already exists and you want to modify it. You need to execute the modification sql through other clients（Such as Remote terminal） and update the code of the Schema!!!|
-
-
 
 ### DATA_TYPE
 
