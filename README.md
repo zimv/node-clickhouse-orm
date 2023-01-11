@@ -1,4 +1,4 @@
-[![Coverage Status](https://coveralls.io/repos/github/zimv/node-clickhouse-orm/badge.svg?branch=feature/3.0)](https://coveralls.io/github/zimv/node-clickhouse-orm?branch=feature/3.0)
+[![Coverage Status](https://coveralls.io/repos/github/zimv/node-clickhouse-orm/badge.svg?branch=main)](https://coveralls.io/github/zimv/node-clickhouse-orm?branch=main)
 <a href="https://www.npmjs.com/package/clickhouse-orm" alt="NPM latest version"><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/05ad3e5cb52b4c149b47362377505916~tplv-k3u1fbpfcp-zoom-1.image"></a>
 <a href="https://npms.io/search?q=clickhouse-orm" alt="NPM latest version"><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/bb03631752ce4ccf89445f94a4a02d97~tplv-k3u1fbpfcp-zoom-1.image"></a>
 <a href="https://www.npmjs.com/package/clickhouse-orm" alt="NPM total downloads"><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/4cb1a7ae1bf14cda804c0b3db0d50252~tplv-k3u1fbpfcp-zoom-1.image"></a>
