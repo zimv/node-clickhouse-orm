@@ -202,7 +202,7 @@ doDemo();
 
 **详情参考 [Basic Example](https://github.com/zimv/node-clickhouse-orm/blob/main/examples/basic.js).**
 
-# 概述
+# 文档
 
 `注意`: **'?'** 代表可选项
 
@@ -226,7 +226,7 @@ doDemo();
 
 > 客户端驱动配置. 详情请看 [TimonKK/clickhouse](https://github.com/TimonKK/clickhouse).
 
-### ModelConfig
+### Model模型参数配置
 * ModelConfig
 
 |  | 是否必选项 | 类型 | 描述 |
@@ -252,14 +252,14 @@ doDemo();
 |  | 是否必选项 | 类型 | 描述 |
 | ------ | ------ | ------ | ------ |
 | tableName | true | string | 表名 |
-| schema | true | { [column]: { type?, default? } } | `type`定义数据类型, `default` 设置默认值|
+| schema | true | { [column]: { type, default? } } | `type`定义数据类型, `default` 设置默认值|
 | createTable | true | string | 自动建表的 **SQL** 语句，模型创建时会执行. 建议使用 **'IF NOT EXISTS'** 避免报错. <br> 注意 !!! >>>>> 如果表结构要变动，此配置不会同步，你需要使用其他客户端（比如终端连接数据库）去执行改表语句。最后再回来修改代码|
 
 
 
-### DATA_TYPE
+### 数据类型
 
-clickhouse数据类型. 下面大部分数据 **ORM** 会验证，但也仅验证基本的数据类型`number | string | boolean | date`，不会用最标准的数据类型验证。比如 **Int8**，**ORM** 只验证 **number** 类型。
+ClickHouse 数据类型. 下面大部分数据 **ORM** 会验证，但也仅验证基本的数据类型`number | string | boolean | date`，不会用最标准的数据类型验证。比如 **Int8**，**ORM** 只验证 **number** 类型。
 
 
 ```typescript
@@ -346,7 +346,7 @@ chOrm.client
 
 # [更多示例](https://github.com/zimv/node-clickhouse-orm/blob/main/examples/more.ts)
 
-### Find
+### 查询
 
 ```javascript
 import * as dayjs from "dayjs";
@@ -383,7 +383,7 @@ ORM 最终执行的 SQL:
 SELECT * from orm_test.table1 where status='1' and time>='2022-02-04 15:34:22' and time<='2022-02-05 15:34:22'  ORDER BY time ASC LIMIT 5
 ```
 
-### Count
+### 统计
 
 ```javascript
 countExample1({
@@ -405,7 +405,7 @@ ORM 最终执行的 SQL:
 SELECT count(*) AS total from orm_test.table1
 ```
 
-### GroupBy
+### 聚合查询
 
 ```javascript
 Table1Model.find({
@@ -440,7 +440,7 @@ ORM 最终执行的 SQL:
 SELECT count() as browserTotal from (SELECT browser from orm_test.table1  GROUP BY browser  )
 ```
 
-### save
+### 创建数据和保存
 
 ```javascript
 // new data model
@@ -464,7 +464,7 @@ ORM 最终执行的 SQL:
 INSERT INTO orm_test.table1 (time,status,browser,browser_v) [{"time":"2022-02-05T07:51:16.919Z","status":1,"browser":"chrome","browser_v":"90.0.1.21"}]\
 ```
 
-### create
+### 创建并保存数据
 
 ```javascript
 //do create
@@ -482,7 +482,7 @@ ORM 最终执行的 SQL:
 INSERT INTO orm_test.table1 (time,status,browser,browser_v) [{"time":"2022-02-05T07:51:16.919Z","status":1,"browser":"chrome","browser_v":"90.0.1.21"}]\
 ```
 
-### InsertMany
+### 多条数据存储
 
 ```javascript
 const list = [
@@ -512,7 +512,7 @@ ORM 最终执行的 SQL:
 INSERT INTO orm_test.table1 (time,status,browser,browser_v) [{"time":"2022-02-05T07:34:22.226Z","status":2,"browser":"IE","browser_v":"10.0.1.21"},{"time":"2022-02-05T07:34:22.226Z","status":2,"browser":"FF","browser_v":"2.0.3"},{"time":"2022-02-05T07:34:22.226Z","status":3,"browser":"IE","browser_v":"1.1.1"}]
 ```
 
-### delete
+### 删除
 
 ```javascript
 
@@ -558,4 +558,4 @@ const Table2Model = await chOrm.model(table2Schema);
 
 # 微信讨论群
 
-[Click to join](https://github.com/zimv/node-clickhouse-orm/issues/3)
+[点击获取入群二维码](https://github.com/zimv/node-clickhouse-orm/issues/3)

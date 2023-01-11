@@ -200,7 +200,7 @@ doDemo();
 
 **More in [Basic Example](https://github.com/zimv/node-clickhouse-orm/blob/main/examples/basic.js).**
 
-# Overview
+# Document
 
 `Note`: '?' is a Optional
 
@@ -224,7 +224,7 @@ doDemo();
 
 > Drive configuration. More in [TimonKK/clickhouse](https://github.com/TimonKK/clickhouse).
 
-### ModelConfig
+### Model config params
 * ModelConfig
 
 |  | required | type | description |
@@ -249,14 +249,14 @@ doDemo();
 |  | required | type | description |
 | ------ | ------ | ------ | ------ |
 | tableName | true | string | It is the table name. |
-| schema | true | { [column]: { type?, default? } } | `Type` defines the data type, and `default` sets the default value |
+| schema | true | { [column]: { type, default? } } | `Type` defines the data type, and `default` sets the default value |
 | createTable | true | string | It is the SQL for creating tables.When model is executed, this SQL will be executed. It is suggested to add 'IF NOT EXISTS'. <br> Watch out !!! >>>>> If the table already exists and you want to modify it. You need to execute the modification sql through other clients（Such as Remote terminal） and update the code of the Schema!!!|
 
 
 
 ### DATA_TYPE
 
-Clickhouse data type. Most of the following data will be validated by ORM, but only the basic data type `number | string | boolean | date` will be validated, not the most standard data type. For example, in `Int8`, ORM only verifies the `number` type.
+ClickHouse data type. Most of the following data will be validated by ORM, but only the basic data type `number | string | boolean | date` will be validated, not the most standard data type. For example, in `Int8`, ORM only verifies the `number` type.
 
 
 ```typescript
