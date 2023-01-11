@@ -123,6 +123,7 @@ Table1Model.find({
 | tableName | true | string | It is the table name. |
 | schema | true | { [column]: { type, default? } } | `Type` defines the data type, and `default` sets the default value |
 
+
 ```typescript
 import { DATA_TYPE, ModelConfig } from 'clickhouse-orm';
 const xxxSchema: ModelConfig = {

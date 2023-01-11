@@ -123,8 +123,8 @@ Table1Model.find({
 | tableName | true | string | 表名 |
 | schema | true | { [column]: { type, default? } } | `type`定义数据类型, `default` 设置默认值|
 
-```typescript
 
+```typescript
 import { DATA_TYPE, ModelConfig } from 'clickhouse-orm';
 const xxxSchema: ModelConfig = {
   // table name
