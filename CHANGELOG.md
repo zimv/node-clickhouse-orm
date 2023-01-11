@@ -1,5 +1,5 @@
 # Change Log
-## 3.0.0 (2023-01-)
+## 3.0.0 (2023-01-11)
 
 ### Features
 
@@ -7,6 +7,7 @@
 * add data types
 * update document
 * add zh document
+* update test
 * refactoring code
 ## 2.0.2 (2022-12-28)
 
