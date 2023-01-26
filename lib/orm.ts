@@ -21,24 +21,42 @@ export interface OrmConfig {
   debug: boolean;
 }
 
-export interface ModelConfig {
+export interface ModelConfig<T = any> {
   tableName: string;
-  schema: SchemaConfig;
+  schema: SchemaConfig<T>;
 }
-export interface ModelSyncTableConfig {
+export interface ModelSyncTableConfig<T = any> {
   tableName: string;
-  schema: SchemaConfig;
+  schema: SchemaConfig<T>;
   autoCreate: boolean;
   options: string;
   autoSync?: boolean;
 }
-export interface ModelSqlCreateTableConfig {
+export interface ModelSqlCreateTableConfig<T = any> {
   tableName: string;
-  schema: SchemaConfig;
+  schema: SchemaConfig<T>;
   createTable?: (dbTableName: string, db: DbConfig) => string;
 }
 
 type TableMeta = { name: string; type: string }[];
+type ModelConfigs<T> =
+  | ModelConfig<T>
+  | ModelSyncTableConfig<T>
+  | ModelSqlCreateTableConfig<T>;
+
+/** {a:unknown,b:string,c:unknown} >>> 'a'|'c' */
+type GetUnknownAttr<T> = {
+  [a in keyof T]: unknown extends T[a] ? a : never;
+}[keyof T];
+
+/** {a:unknown,b:string,c:unknown} >>> {b:string} */
+type GetDefinedAttr<T> = Pick<T, Exclude<keyof T, GetUnknownAttr<T>>>;
+
+type GetColumnType<T> = {
+  [f in keyof GetDefinedAttr<T>]: GetDefinedAttr<T>[f];
+} & {
+  [f in GetUnknownAttr<T>]?: any;
+};
 export default class ClickhouseOrm {
   client: ClickHouse;
   db: DbConfig;
@@ -206,14 +224,12 @@ export default class ClickhouseOrm {
       }
     }
   }
-
+  P;
   /**
    * @remark
    * The createDatabase must be completed
    */
-  async model(
-    modelConfig: ModelConfig | ModelSyncTableConfig | ModelSqlCreateTableConfig
-  ) {
+  async model<T = any>(modelConfig: ModelConfigs<T>) {
     const { tableName, schema } = modelConfig;
     const dbTableName = `${this.db.name}.${tableName}`;
 
@@ -223,7 +239,13 @@ export default class ClickhouseOrm {
     )
       await this.createAndSync(modelConfig, dbTableName);
 
-    const modelInstance = new Model({
+    const modelInstance = new Model<
+      {
+        [f in keyof GetDefinedAttr<T>]: GetDefinedAttr<T>[f];
+      } & {
+        [f in GetUnknownAttr<T>]?: any;
+      }
+    >({
       client: this.client,
       db: this.db,
       dbTableName,

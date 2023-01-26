@@ -3,13 +3,19 @@ import {
   ClickhouseOrm,
   DATA_TYPE,
   ModelSyncTableConfig,
+  ClickhouseOrmModel,
 } from "../lib/index";
 import { clientConfig } from "../mock";
 
 /**
  * defined Model
  */
-const table1Schema: ModelSyncTableConfig = {
+const table1Schema: ModelSyncTableConfig<{
+  status?: number;
+  time: Date;
+  browser?: string;
+  browser_v?: string;
+}> = {
   tableName: "table1",
   schema: {
     time: { type: DATA_TYPE.DateTime, default: Date },
@@ -112,7 +118,14 @@ const queryExample1 = ({ Model, status, beginTime, endTime }) => {
   if (endTime) wheres.push(`time<='${endTime}'`);
   if (wheres.length > 0) where = wheres.join(" and ");
 
-  return Model.find({
+  return (
+    Model as ClickhouseOrmModel<{
+      status?: number;
+      time: Date;
+      browser?: string;
+      browser_v?: string;
+    }>
+  ).find({
     where,
     select: `*`,
     orderBy: "time ASC",

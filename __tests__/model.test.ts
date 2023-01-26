@@ -89,4 +89,18 @@ describe("model can work normal", () => {
 
     expect(LogMock).toHaveBeenCalled();
   });
+
+  test("it cannot insert many data", async () => {
+    const model = new Model({
+      client: new ClickHouse(initConfig.client),
+      dbTableName: `${initConfig.db.name}.${modelSqlCreateTableConfig.tableName}`,
+      debug: initConfig.debug,
+      db: initConfig.db,
+      schema: modelSqlCreateTableConfig.schema,
+    });
+
+    const res = await model.insertMany([]);
+
+    expect(res).toBe(undefined);
+  });
 });

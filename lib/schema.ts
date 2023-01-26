@@ -3,12 +3,19 @@ import DataInstance from "./dataInstance";
 import { isObject, isObjectDate } from "./utils";
 import { ErrorLog } from "./log";
 
-export interface SchemaConfig {
-  [key: string]: {
-    type: DATA_TYPE_DEFINE;
-    default?: any;
-  };
-}
+export type SchemaConfig<T = undefined> = T extends undefined
+  ? {
+      [x: string]: {
+        type: DATA_TYPE_DEFINE;
+        default?: any;
+      };
+    }
+  : {
+      [x in keyof T]-?: {
+        type: DATA_TYPE_DEFINE;
+        default?: any;
+      };
+    };
 
 const errorThrow = ({ column, newVal, columnType }) => {
   const info = `column[${column}]-value(${newVal}): '${columnType}' type validation failed`;
