@@ -1,14 +1,14 @@
 [![Coverage Status](https://coveralls.io/repos/github/zimv/node-clickhouse-orm/badge.svg?branch=main)](https://coveralls.io/github/zimv/node-clickhouse-orm?branch=main)
-<a href="https://www.npmjs.com/package/clickhouse-orm" alt="NPM latest version"><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/05ad3e5cb52b4c149b47362377505916~tplv-k3u1fbpfcp-zoom-1.image"></a>
-<a href="https://npms.io/search?q=clickhouse-orm" alt="NPM latest version"><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/bb03631752ce4ccf89445f94a4a02d97~tplv-k3u1fbpfcp-zoom-1.image"></a>
-<a href="https://www.npmjs.com/package/clickhouse-orm" alt="NPM total downloads"><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/4cb1a7ae1bf14cda804c0b3db0d50252~tplv-k3u1fbpfcp-zoom-1.image"></a>
-<a href="https://github.com/zimv/node-clickhouse-orm" alt="Github stars"><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/a5df26c796d14e53a63f4f08afcd630f~tplv-k3u1fbpfcp-zoom-1.image"></a>
-<a href="https://github.com/zimv/node-clickhouse-orm" alt="Github forks"><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/57da9f95623043dbb052d873ebeac981~tplv-k3u1fbpfcp-zoom-1.image"></a>
-<a href="https://github.com/zimv/node-clickhouse-orm" alt="Github contributors"><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/ab0ae120764e474db09c743634b102f9~tplv-k3u1fbpfcp-zoom-1.image"></a>
+<a href="https://www.npmjs.com/package/clickhouse-orm" alt="NPM latest version"><img src="https://img.shields.io/npm/v/clickhouse-orm.svg"></a>
+<a href="https://npms.io/search?q=clickhouse-orm" alt="NPM latest version"><img src="https://badges.npms.io/clickhouse-orm.svg"></a>
+<a href="https://www.npmjs.com/package/clickhouse-orm" alt="NPM total downloads"><img src="https://img.shields.io/npm/dt/clickhouse-orm.svg"></a>
+<a href="https://github.com/zimv/node-clickhouse-orm" alt="Github stars"><img src="https://img.shields.io/github/stars/zimv/node-clickhouse-orm.svg?style=social&label=Star"></a>
+<a href="https://github.com/zimv/node-clickhouse-orm" alt="Github forks"><img src="https://img.shields.io/github/forks/zimv/node-clickhouse-orm.svg?style=social&label=Fork"></a>
+<a href="https://github.com/zimv/node-clickhouse-orm" alt="Github contributors"><img src="https://img.shields.io/github/contributors/zimv/node-clickhouse-orm.svg"></a>
 
 # clickhouse-orm  [(English README)](https://github.com/zimv/node-clickhouse-orm/blob/main/README.md)
 
-[![Join the chat at https://gitter.im/zimv/node-clickhouse-orm](https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/8230cfb055bc4f1699e1749b6a7a3421~tplv-k3u1fbpfcp-zoom-1.image)](https://gitter.im/zimv/node-clickhouse-orm?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Join the chat at https://gitter.im/zimv/node-clickhouse-orm](https://badges.gitter.im/zimv/node-clickhouse-orm.svg)](https://gitter.im/zimv/node-clickhouse-orm?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 Clickhouse ORM for Nodejs. 使用 HTTP 接口通信. 使用 [TimonKK/clickhouse](https://github.com/TimonKK/clickhouse) 作为客户端.
 
@@ -47,12 +47,18 @@ const chOrm = ClickhouseOrm({
 **定义数据模型：**
 ```typescript
 import { DATA_TYPE, ModelSyncTableConfig } from 'clickhouse-orm';
-const oldSchema: ModelSyncTableConfig = {
-  tableName: "xxx",
+const table1Schema: ModelSyncTableConfig<{
+  status?: number;
+  time: Date;
+  browser?: string;
+  browser_v?: string;
+}> = {
+  tableName: "table1",
   schema: {
     time: { type: DATA_TYPE.DateTime, default: Date },
-    will_typeChanged: { type: DATA_TYPE.Int16 },
-    will_deleted: { type: DATA_TYPE.String },
+    status: { type: DATA_TYPE.Int32 },
+    browser: { type: DATA_TYPE.String },
+    browser_v: { type: DATA_TYPE.String },
   },
   options: `ENGINE = MergeTree
   PARTITION BY toYYYYMM(time)
@@ -126,7 +132,12 @@ Table1Model.find({
 
 ```typescript
 import { DATA_TYPE, ModelConfig } from 'clickhouse-orm';
-const xxxSchema: ModelConfig = {
+const xxxSchema: ModelConfig<{
+  status?: number;
+  time: Date;
+  browser?: string;
+  browser_v?: string;
+}> = {
   // table name
   tableName: "xxx",
   // define column name
@@ -156,7 +167,11 @@ const xxxSchema: ModelConfig = {
 ```typescript
 
 import { DATA_TYPE, ModelSyncTableConfig } from 'clickhouse-orm';
-const oldSchema: ModelSyncTableConfig = {
+const oldSchema: ModelSyncTableConfig<{
+    time: Date;
+    will_typeChanged?: number;
+    will_deleted?: string;
+  }> = {
   tableName: "xxx",
   schema: {
     time: { type: DATA_TYPE.DateTime, default: Date },
@@ -219,7 +234,12 @@ newSchema = {
 ```typescript
 
 import { DATA_TYPE, ModelSqlCreateTableConfig } from 'clickhouse-orm';
-const xxxSchema: ModelSqlCreateTableConfig = {
+const xxxSchema: ModelSqlCreateTableConfig<{
+    status?: number;
+    time: Date;
+    browser?: string;
+    browser_v?: string;
+  }> = {
   // table name
   tableName: "xxx",
   // define column name
@@ -550,3 +570,8 @@ const Table2Model = await chOrm.model(table2Schema);
 # 微信讨论群
 
 [点击获取入群二维码](https://github.com/zimv/node-clickhouse-orm/issues/3)
+
+##### 或者
+
+
+[![Join the chat at https://gitter.im/zimv/node-clickhouse-orm](https://badges.gitter.im/zimv/node-clickhouse-orm.svg)](https://gitter.im/zimv/node-clickhouse-orm?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)

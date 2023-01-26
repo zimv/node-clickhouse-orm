@@ -12,7 +12,7 @@ const commanParams = {
   autoCreate: true,
   autoSync: true,
 };
-const newModelSyncTableConfig: ModelSyncTableConfig = {
+const newModelSyncTableConfig = {
   ...commanParams,
   schema: {
     time: { type: DATA_TYPE.DateTime, default: Date },
@@ -21,7 +21,7 @@ const newModelSyncTableConfig: ModelSyncTableConfig = {
   },
 };
 
-const updateModelSyncTableConfig: ModelSyncTableConfig = {
+const updateModelSyncTableConfig = {
   ...commanParams,
   schema: {
     time: { type: DATA_TYPE.DateTime, default: Date },

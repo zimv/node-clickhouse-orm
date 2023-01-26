@@ -4,6 +4,8 @@ import { ErrorLog } from "./log";
 export { setLogService } from "./log"; // Singleton Pattern
 export { DATA_TYPE } from "./dataType";
 export * from "./orm";
+export { default as ClickHouseORM } from "./orm";
+export { default as ClickhouseOrmModel } from "./model";
 
 export const ClickhouseOrm = ({ client, db, debug = false }: OrmConfig) => {
   if (!db) {

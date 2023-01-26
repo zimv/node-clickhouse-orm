@@ -1,17 +1,18 @@
 import { getPureData, insertSQL } from "./transformer";
 import { ErrorLog, DebugLog } from "./log";
 import { isObject } from "./utils";
-import Model from "./model";
+import { ClickhouseClientInsertPromise } from "./constants";
 
 export default class DataInstance {
   [key: string]: any;
+
   model;
-  constructor(model: Model, initData?: Object) {
+  constructor(model, initData?) {
     this.model = model;
     this.proxyApply();
     initData && isObject(initData) && this.setInitData(initData);
   }
-  private setInitData(initData: Object) {
+  private setInitData(initData) {
     Object.keys(initData).forEach((column: string) => {
       if (this.checkColumnExist(column)) this[column] = initData[column];
     });
@@ -33,12 +34,14 @@ export default class DataInstance {
       schemaInstance.proxyAttr(schemaInstance.schemaConfig, this, column);
     });
   }
-  save(): Promise<any> {
+  save(): ClickhouseClientInsertPromise {
     const schemaInstance = this.model.schemaInstance;
     const data = getPureData(schemaInstance, this);
     const insertHeaders = insertSQL(this.model.dbTableName, schemaInstance);
     if (this.model.debug)
       DebugLog(`execute save> ${insertHeaders} ${JSON.stringify([data])}`);
-    return this.model.client.insert(insertHeaders, [data]).toPromise();
+    return this.model.client
+      .insert(insertHeaders, [data])
+      .toPromise() as ClickhouseClientInsertPromise;
   }
 }

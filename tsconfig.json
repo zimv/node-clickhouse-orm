@@ -9,10 +9,12 @@
     "target": "es2015",
     "sourceMap": false,
     "outDir": "./dist",
-    "baseUrl": "./lib",
     "incremental": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
   },
+  "include": [
+    "./lib/**.ts",
+  ],
   "exclude": [
     "__tests__",
     "examples",

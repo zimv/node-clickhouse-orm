@@ -1,11 +1,11 @@
-import { ClickhouseOrm, DATA_TYPE, ModelSyncTableConfig } from "../lib/index";
+import { ClickhouseOrm, DATA_TYPE } from "../lib/index";
 import { clientConfig } from "../mock";
 import * as colors from "colors/safe";
 
 /**
  * defined Model
  */
-const table1Schema: ModelSyncTableConfig = {
+const table1Schema = {
   tableName: "table1",
   schema: {
     time: { type: DATA_TYPE.DateTime, default: Date },
@@ -64,7 +64,7 @@ const doDemo = async () => {
 
   // new data model
   const data = Table1Model.build({ status: 2 });
-
+  
   // set value
   data.time = new Date();
   data.browser = "chrome";

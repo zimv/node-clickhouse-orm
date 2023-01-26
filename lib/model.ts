@@ -11,6 +11,10 @@ import Schema, { SchemaConfig } from "./schema";
 import { DebugLog } from "./log";
 import { DbConfig } from "./orm";
 import DataInstance from "./dataInstance";
+import {
+  ClickhouseClientInsertPromise,
+  ClickhouseClientToPromise,
+} from "./constants";
 
 export interface ModelOptions {
   client: ClickHouse;
@@ -20,12 +24,13 @@ export interface ModelOptions {
   db: DbConfig;
 }
 
-export default class Model {
+export default class Model<T = any> {
   client;
   dbTableName;
   debug;
   db;
   schemaInstance: Schema;
+  schema: SchemaConfig;
 
   constructor({ client, dbTableName, debug, schema, db }: ModelOptions) {
     this.client = client;
@@ -37,19 +42,19 @@ export default class Model {
     return this;
   }
 
-  create(obj: Object) {
+  create(data: T): ClickhouseClientInsertPromise {
     // new data model
-    const instance = this.build(obj);
+    const instance = new DataInstance(this, data);
 
     // do save
     return instance.save();
   }
 
-  build(initData?: Object) {
-    return new DataInstance(this, initData);
+  build(initData?: Partial<T>) {
+    return new DataInstance(this, initData) as DataInstance & Partial<T>;
   }
 
-  find(qObjArray: SqlObject[] | SqlObject): Promise<any> {
+  find(qObjArray: SqlObject[] | SqlObject): ClickhouseClientToPromise {
     if (!Array.isArray(qObjArray)) qObjArray = [qObjArray];
     let sql = "";
     qObjArray.map((qObj, index) => {
@@ -60,7 +65,7 @@ export default class Model {
     return this.client.query(sql).toPromise();
   }
 
-  delete(deleteObject: DeleteSqlObject): Promise<any> {
+  delete(deleteObject: DeleteSqlObject): ClickhouseClientToPromise {
     let sql = deleteObject2Sql(this.dbTableName, {
       ...deleteObject,
       cluster: this.db.cluster,
@@ -69,8 +74,10 @@ export default class Model {
     return this.client.query(sql).toPromise();
   }
 
-  insertMany(dataArray: Array<Object> | Array<DataInstance>): Promise<any> {
-    const datas = [...dataArray].map((item: Object | DataInstance) => {
+  insertMany(
+    dataArray: Array<T> | Array<DataInstance & T>
+  ): ClickhouseClientInsertPromise {
+    const datas = [...dataArray].map((item: T | (DataInstance & T)) => {
       let data;
       if (item instanceof DataInstance) {
         data = getPureData(this.schemaInstance, item);
@@ -89,7 +96,5 @@ export default class Model {
         );
       return this.client.insert(insertHeaders, datas).toPromise();
     }
-
-    return Promise.resolve({ r: 0 });
   }
 }

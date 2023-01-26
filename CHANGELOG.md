@@ -1,4 +1,11 @@
 # Change Log
+
+## 3.0.2 (2023-01-26)
+### Features
+
+* refactor ts 
+* update document
+
 ## 3.0.0 (2023-01-11)
 
 ### Features

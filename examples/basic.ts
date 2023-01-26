@@ -1,10 +1,10 @@
-import { ClickhouseOrm, DATA_TYPE, ModelSyncTableConfig } from "../lib/index";
+import { ClickhouseOrm, DATA_TYPE } from "../lib/index";
 import { clientConfig } from "../mock";
 
 /**
  * defined Model
  */
-const table1Schema: ModelSyncTableConfig = {
+const table1Schema = {
   tableName: "table1",
   schema: {
     time: { type: DATA_TYPE.DateTime, default: Date },
@@ -41,6 +41,13 @@ const doDemo = async () => {
 
   console.log(chOrm.models);
 
+  chOrm.client
+    .query("select dd from orm_test")
+    .toPromise()
+    .catch((e) => {
+      console.log(Object.keys(e));
+    });
+
   // do create
   await Table1Model.create({
     status: 1,
@@ -53,7 +60,6 @@ const doDemo = async () => {
 
   // new data model
   const data = Table1Model.build({ status: 2 });
-
   // set value
   data.time = new Date();
   data.browser = "chrome";
