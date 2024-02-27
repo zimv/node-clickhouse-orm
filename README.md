@@ -450,7 +450,7 @@ Final executed SQL:
 SELECT count() as browserTotal from (SELECT browser from orm_test.table1  GROUP BY browser  )
 ```
 
-### save
+### Save
 
 ```javascript
 // new data model
@@ -474,7 +474,7 @@ Final executed SQL:
 INSERT INTO orm_test.table1 (time,status,browser,browser_v) [{"time":"2022-02-05T07:51:16.919Z","status":1,"browser":"chrome","browser_v":"90.0.1.21"}]\
 ```
 
-### create
+### Create
 
 ```javascript
 //do create
@@ -522,7 +522,7 @@ Final executed SQL:
 INSERT INTO orm_test.table1 (time,status,browser,browser_v) [{"time":"2022-02-05T07:34:22.226Z","status":2,"browser":"IE","browser_v":"10.0.1.21"},{"time":"2022-02-05T07:34:22.226Z","status":2,"browser":"FF","browser_v":"2.0.3"},{"time":"2022-02-05T07:34:22.226Z","status":3,"browser":"IE","browser_v":"1.1.1"}]
 ```
 
-### delete
+### Delete
 
 ```javascript
 
@@ -537,7 +537,7 @@ Final executed SQL:
 ALTER TABLE orm_test.table1  DELETE  WHERE browser='Chrome'
 ```
 
-## cluster
+## Cluster
 
 **Create a cluster instance：**
 
@@ -570,6 +570,6 @@ const Table2Model = await chOrm.model(table2Schema);
 
 [Click to join](https://github.com/zimv/node-clickhouse-orm/issues/3)
 
-##### or
+##### Or
 
 [![Join the chat at https://gitter.im/zimv/node-clickhouse-orm](https://badges.gitter.im/zimv/node-clickhouse-orm.svg)](https://gitter.im/zimv/node-clickhouse-orm?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
