@@ -538,7 +538,7 @@ ORM 最终执行的 SQL:
 ALTER TABLE orm_test.table1  DELETE  WHERE browser='Chrome'
 ```
 
-## cluster 集群
+## Cluster 集群
 
 **创建一个集群实例：**
 
